@@ -1088,7 +1088,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     if(uso&&(uso.hoy>=uso.limite_dia||uso.semana>=uso.limite_semana)){var s0=motivo({motivo:uso.hoy>=uso.limite_dia?'LIMITE_DIA':'LIMITE_SEMANA',uso:uso});add('s',s0);return Promise.resolve(s0);}
     enviando=true;botSt('pensando');var w=add('a','');var dd=el('span','dots');dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));w.appendChild(dd);
     return invocar({pregunta:t,historial:hist.slice(-6)}).then(function(r){enviando=false;botSt('idle');var d=r.data;
-      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v2.9, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
+      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v3.0, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
       if(d.uso){uso=d.uso;pintaUso();}
       if(!d.ok){w.remove();var s2=motivo(d);add('s',s2);return s2;}
       w.textContent=d.respuesta;M.scrollTop=M.scrollHeight;hist.push({role:'user',content:t});hist.push({role:'assistant',content:d.respuesta});
@@ -1253,6 +1253,16 @@ try{if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEve
   function sync(){var n=capas().length;while(pushed<n){try{history.pushState({af:1},'');}catch(e){}pushed++;}if(pushed>n){var d=pushed-n;pushed=n;ign=true;try{history.go(-d);}catch(e){ign=false;}}}
   window.addEventListener('popstate',function(){if(ign){ign=false;return;}var id=ordenar();if(id){pushed=Math.max(0,pushed-1);var b=document.getElementById(id);if(b){b.click();}}else{pushed=0;}});
   var mo=new MutationObserver(sync);['ai-panel','ai-voice','povl','ovl'].forEach(function(i){var e=document.getElementById(i);if(e){mo.observe(e,{attributes:true,attributeFilter:['class','style']});}});})();
+
+/* Bloqueo por inactividad: sin tocar la app por LOCK_SEG segundos, cierra la sesión y pide acceso de nuevo */
+(function(){var LOCK_SEG=30,last=Date.now();
+  function act(){last=Date.now();}
+  ['pointerdown','touchstart','touchmove','keydown','wheel','scroll','click'].forEach(function(e){window.addEventListener(e,act,{passive:true,capture:true});});
+  function ocupado(){var V=document.getElementById('ai-voice');if(V&&V.classList.contains('on')){return true;}try{if(window.speechSynthesis&&speechSynthesis.speaking){return true;}}catch(e){}var a=document.querySelectorAll('audio');for(var i=0;i<a.length;i++){if(!a[i].paused){return true;}}return !!document.querySelector('.bot[data-st=pensando],.bot[data-st=hablando]');}
+  function revisa(){if(!uid){last=Date.now();return;}if(ocupado()){last=Date.now();return;}if(Date.now()-last>LOCK_SEG*1000){last=Date.now();bloqueado=true;sb.auth.signOut().then(function(){setMode('in');view('v-login');amsg('Sesión bloqueada por inactividad ('+LOCK_SEG+' s). Ingresa de nuevo para continuar.');});}}
+  setInterval(revisa,1000);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden){revisa();}});
+})();
 </script>
 </body>
 </html>
