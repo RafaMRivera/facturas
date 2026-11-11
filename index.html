@@ -927,7 +927,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   function esConsumo(t){var n=normT(t).replace(/[¿?¡!.,]/g,'').trim();return n.length<60&&/^(consumo|uso|limite|limites|cuanto (llevo|he consumido|he gastado en (la )?(api|ia))|cuantas preguntas (llevo|me quedan))/.test(n)||/consumo de (la )?(api|ia|asistente)/.test(n);}
   function motivo(d){var m=d&&d.motivo;if(m==='LIMITE_DIA'){return 'Llegaste al tope de hoy ('+d.uso.limite_dia+' preguntas). Vuelve a estar disponible el '+fechaC(d.uso.reinicia_dia)+'.';}if(m==='LIMITE_SEMANA'){return 'Llegaste al tope de la semana ('+d.uso.limite_semana+' preguntas). Se reinicia el lunes '+fechaC(d.uso.reinicia_semana)+'.';}if(m==='SIN_LLAVE'){return 'Simi todavía no tiene una IA conectada. Toca «Conexión IA», abajo a la derecha, y pega tu llave.';}if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}return 'No pude responder en este momento. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
   /* La función puede llamarse «asistente» o «quick-processor» (nombre que le puso Supabase) */
-  var FN=['asistente','quick-processor'];var fnOk=null;
+  var FN=['quick-processor','asistente'];var fnOk=null;
   function invocar(body){if(fnOk){return sb.functions.invoke(fnOk,{body:body});}return sb.functions.invoke(FN[0],{body:body}).then(function(r){if(!r.error&&r.data){fnOk=FN[0];return r;}return sb.functions.invoke(FN[1],{body:body}).then(function(r2){if(!r2.error&&r2.data){fnOk=FN[1];}return r2;});});}
   /* Envía la pregunta; devuelve una promesa con el texto que se mostró */
   function preguntar(t){t=String(t||'').trim();if(!t||enviando){return Promise.resolve('');}var hr=M.querySelector('.ai-hero');if(hr){hr.remove();}add('u',t);
@@ -935,7 +935,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     if(uso&&(uso.hoy>=uso.limite_dia||uso.semana>=uso.limite_semana)){var s0=motivo({motivo:uso.hoy>=uso.limite_dia?'LIMITE_DIA':'LIMITE_SEMANA',uso:uso});add('s',s0);return Promise.resolve(s0);}
     enviando=true;botSt('pensando');var w=add('a','');var dd=el('span','dots');dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));w.appendChild(dd);
     return invocar({pregunta:t,historial:hist.slice(-6)}).then(function(r){enviando=false;botSt('idle');var d=r.data;
-      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'El asistente todavía no está instalado en Supabase (falta la función «asistente»).':'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
+      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v2.1, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
       if(d.uso){uso=d.uso;pintaUso();}
       if(!d.ok){w.remove();var s2=motivo(d);add('s',s2);return s2;}
       w.textContent=d.respuesta;M.scrollTop=M.scrollHeight;hist.push({role:'user',content:t});hist.push({role:'assistant',content:d.respuesta});
