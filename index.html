@@ -341,6 +341,25 @@ th:first-child,td:first-child{text-align:left}
 .ai-f input:focus{border-color:var(--brand);box-shadow:0 0 0 4px var(--soft)}
 .ai-f .ai-ib{width:44px;height:44px;border-radius:50%}
 .ai-ib.rec{background:var(--red);color:#fff;border-color:var(--red);animation:orbp 1s ease-in-out infinite}
+#ai-cfg{border:0;background:transparent;color:var(--brand);font:inherit;font-weight:700;letter-spacing:inherit;cursor:pointer;padding:0}
+#ai-cfg:hover{text-decoration:underline}
+.ai-cf{display:none;flex:1;overflow-y:auto;padding:14px 16px;background:var(--surface);-webkit-overflow-scrolling:touch}
+#ai-panel.cfg .ai-cf{display:block}
+#ai-panel.cfg .ai-m,#ai-panel.cfg .ai-sg,#ai-panel.cfg .ai-sgh,#ai-panel.cfg .ai-f,#ai-panel.cfg .ai-use{display:none!important}
+.cf-t{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.cf-t b{font-size:15px;color:var(--head)}
+.cf-s{font-size:12px;color:var(--text);background:var(--surface2);border:1px solid var(--line);border-left:3px solid var(--vib);border-radius:10px;padding:8px 10px;margin-bottom:6px}
+.cf-l{display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
+.cf-h{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.45}
+.cf-pv{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.cf-pv button{height:42px;padding:0 2px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface2);color:var(--text);font-weight:700;font-size:12px;cursor:pointer;position:relative}
+.cf-pv button.on{border-color:var(--brand);background:var(--soft);color:var(--brand)}
+.cf-pv button.act:after{content:'';position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 6px #22C55E}
+.ai-cf input{width:100%;height:42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface2);color:var(--text);padding:0 12px;font-size:16px;outline:0}
+.ai-cf input:focus{border-color:var(--brand);box-shadow:0 0 0 4px var(--soft)}
+.ai-cf .pw button{top:2px;font-size:15px}
+.cf-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cf-b{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+.ai-cf .amsg{margin:12px 0 0}
 /* Modo voz: bordes verdes en toda la pantalla y ondas suaves abajo */
 #ai-voice{position:fixed;inset:0;z-index:80;display:none;flex-direction:column;align-items:center;justify-content:flex-start;background:rgba(2,14,7,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#EAF5EE;padding:calc(72px + env(safe-area-inset-top)) 24px 24px}
 #ai-voice.on{display:flex}
@@ -588,10 +607,27 @@ th:first-child,td:first-child{text-align:left}
   </div>
   <div class="ai-meta"><span><b>PERIODO:</b> <i id="ai-per">—</i></span><span class="nt"><em></em><i id="ai-net">—</i></span></div>
   <div class="ai-use" id="ai-use"></div>
+  <div class="ai-cf" id="ai-cfp">
+    <div class="cf-t"><b>Conexión de IA</b><button type="button" class="lk" id="cf-x">Volver al chat</button></div>
+    <div class="cf-s" id="cf-st">Cargando…</div>
+    <div class="cf-l">Proveedor</div>
+    <div class="cf-pv" id="cf-pv"><button type="button" data-p="claude">Claude</button><button type="button" data-p="openai">ChatGPT</button><button type="button" data-p="gemini">Gemini</button><button type="button" data-p="deepseek">DeepSeek</button></div>
+    <label class="cf-l" for="cf-key">Llave de la API</label>
+    <span class="pw"><input type="password" id="cf-key" autocomplete="off" spellcheck="false" placeholder="Pega aquí la llave"><button type="button" id="cf-eye" aria-label="Mostrar u ocultar la llave">👁</button></span>
+    <div class="cf-h" id="cf-kh"></div>
+    <label class="cf-l" for="cf-mod">Modelo</label>
+    <input type="text" id="cf-mod" autocomplete="off" spellcheck="false">
+    <div class="cf-h" id="cf-mh"></div>
+    <div class="cf-2"><div><label class="cf-l" for="cf-pi">Tarifa entrada (USD por millón)</label><input type="number" id="cf-pi" min="0" step="0.01" inputmode="decimal"></div><div><label class="cf-l" for="cf-po">Tarifa salida (USD por millón)</label><input type="number" id="cf-po" min="0" step="0.01" inputmode="decimal"></div></div>
+    <div class="cf-h">La tarifa solo sirve para estimar el costo en el medidor. Si la dejas en 0, el medidor cuenta preguntas pero no dinero.</div>
+    <div class="amsg" id="cf-msg"></div>
+    <div class="cf-b"><button type="button" class="btn pri" id="cf-save">Guardar y activar</button><button type="button" class="btn" id="cf-del">Quitar esta llave</button></div>
+    <div class="cf-h">La llave se guarda en tu Supabase, en una tabla cerrada. No queda en esta página ni en GitHub, y después de guardarla solo se muestran sus últimos 4 caracteres.</div>
+  </div>
   <div class="ai-m" id="ai-m"></div>
   <div class="ai-sg" id="ai-sg"></div>
   <form class="ai-f" id="ai-f"><button class="ai-ib" id="ai-mic" type="button" title="Dictar" aria-label="Dictar la pregunta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><input id="ai-in" type="text" placeholder="Pregúntale a Simi o di «consumo»…" autocomplete="off" maxlength="500"><button class="ai-ib act" type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
-  <div class="ai-foot"><span>ARQUITECTO FINANCIERO · AF</span><span>SIMI · SOLO LECTURA</span></div>
+  <div class="ai-foot"><span>ARQUITECTO FINANCIERO · AF</span><button type="button" id="ai-cfg">⚙ CONEXIÓN IA</button></div>
 </div>
 <div id="ai-voice" data-st="escuchando" role="dialog" aria-label="Conversación por voz">
   <button class="v-bt" id="v-x">Terminar</button>
@@ -889,7 +925,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   try{speechSynthesis.getVoices();speechSynthesis.addEventListener('voiceschanged',function(){});}catch(e){}
   function callar(){try{speechSynthesis.cancel();}catch(e){}botSt('idle');}
   function esConsumo(t){var n=normT(t).replace(/[¿?¡!.,]/g,'').trim();return n.length<60&&/^(consumo|uso|limite|limites|cuanto (llevo|he consumido|he gastado en (la )?(api|ia))|cuantas preguntas (llevo|me quedan))/.test(n)||/consumo de (la )?(api|ia|asistente)/.test(n);}
-  function motivo(d){var m=d&&d.motivo;if(m==='LIMITE_DIA'){return 'Llegaste al tope de hoy ('+d.uso.limite_dia+' preguntas). Vuelve a estar disponible el '+fechaC(d.uso.reinicia_dia)+'.';}if(m==='LIMITE_SEMANA'){return 'Llegaste al tope de la semana ('+d.uso.limite_semana+' preguntas). Se reinicia el lunes '+fechaC(d.uso.reinicia_semana)+'.';}if(m==='SIN_LLAVE'){return 'Falta guardar la llave de la IA en Supabase (secreto ANTHROPIC_API_KEY).';}if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}return 'No pude responder en este momento. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
+  function motivo(d){var m=d&&d.motivo;if(m==='LIMITE_DIA'){return 'Llegaste al tope de hoy ('+d.uso.limite_dia+' preguntas). Vuelve a estar disponible el '+fechaC(d.uso.reinicia_dia)+'.';}if(m==='LIMITE_SEMANA'){return 'Llegaste al tope de la semana ('+d.uso.limite_semana+' preguntas). Se reinicia el lunes '+fechaC(d.uso.reinicia_semana)+'.';}if(m==='SIN_LLAVE'){return 'Simi todavía no tiene una IA conectada. Toca «Conexión IA», abajo a la derecha, y pega tu llave.';}if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}return 'No pude responder en este momento. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
   /* Envía la pregunta; devuelve una promesa con el texto que se mostró */
   function preguntar(t){t=String(t||'').trim();if(!t||enviando){return Promise.resolve('');}var hr=M.querySelector('.ai-hero');if(hr){hr.remove();}add('u',t);
     if(esConsumo(t)){return traeUso().then(function(){var s=textoUso();add('a',s);$('ai-use').classList.add('on');return s;});}
@@ -939,7 +975,23 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   function vCerrar(){vOn=false;V.classList.remove('on');if(!(P.detalle||P.factura)){document.body.style.overflow='';}cancelAnimationFrame(raf);callar();pararRec();}
   $('ai-vmode').addEventListener('click',vAbrir);$('v-x').addEventListener('click',vCerrar);$('v-tap').addEventListener('click',vEscucha);
   document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&vOn){vCerrar();}});
-  window.aiReset=function(){hist=[];uso=null;M.textContent='';$('ai-panel').classList.remove('on');$('ai-use').classList.remove('on');if(vOn){vCerrar();}};
+  /* Conexión de IA: proveedor, llave y modelo */
+  var PV={claude:{n:'Claude',mod:'claude-haiku-5-5',pi:0.10,po:0.50,kh:'Se crea en console.anthropic.com → API keys. Empieza por sk-ant-.',mh:'Sugerido: claude-haiku-5-5, el más económico.'},openai:{n:'ChatGPT',mod:'',pi:0,po:0,kh:'Se crea en platform.openai.com → API keys. Empieza por sk-.',mh:'Escribe el nombre exacto del modelo como aparece en la consola de OpenAI, y su tarifa.'},gemini:{n:'Gemini',mod:'',pi:0,po:0,kh:'Se crea en aistudio.google.com → Get API key.',mh:'Escribe el nombre exacto del modelo como aparece en Google AI Studio, y su tarifa.'},deepseek:{n:'DeepSeek',mod:'deepseek-chat',pi:0,po:0,kh:'Se crea en platform.deepseek.com → API keys. Empieza por sk-.',mh:'Sugerido: deepseek-chat. Si en tu consola de DeepSeek aparece otro nombre, usa ese, y escribe su tarifa.'}};
+  var cfL=[];var cfP='claude';
+  function cfMsg(t,k){var m=$('cf-msg');m.className='amsg'+(t?' '+(k||'err'):'');m.textContent=t||'';}
+  function cfRow(p){for(var i=0;i<cfL.length;i++){if(cfL[i].proveedor===p){return cfL[i];}}return null;}
+  function cfPinta(){var act=null;cfL.forEach(function(x){if(x.activo){act=x;}});$('cf-st').textContent=act?('Activo: '+PV[act.proveedor].n+' · modelo '+act.modelo+' · llave ····'+act.final):'Todavía no hay ninguna IA conectada. Elige un proveedor, pega su llave y guarda.';
+    var bs=$('cf-pv').children;for(var i=0;i<bs.length;i++){var p=bs[i].getAttribute('data-p');var r=cfRow(p);bs[i].classList.toggle('on',p===cfP);bs[i].classList.toggle('act',!!(r&&r.activo));}
+    var r0=cfRow(cfP);var d=PV[cfP];$('cf-key').value='';$('cf-key').placeholder=r0&&r0.tiene_llave?('Guardada ····'+r0.final+' (déjala vacía para conservarla)'):'Pega aquí la llave de '+d.n;$('cf-kh').textContent=d.kh;$('cf-mod').value=r0?r0.modelo:d.mod;$('cf-mh').textContent=d.mh;$('cf-pi').value=r0?r0.usd_entrada:d.pi;$('cf-po').value=r0?r0.usd_salida:d.po;$('cf-del').style.display=r0&&r0.tiene_llave?'':'none';}
+  function cfErr(e){var m=String((e&&e.message)||e||'');if(/FALTA_LLAVE/.test(m)){return 'Falta pegar la llave.';}if(/FALTA_MODELO/.test(m)){return 'Falta escribir el nombre del modelo.';}if(/app_ia_proveedor|PGRST202|schema cache/i.test(m+' '+((e&&e.code)||''))){return 'Falta correr el archivo asistente_supabase.sql en Supabase.';}return m||'No se pudo guardar. Intenta de nuevo.';}
+  function cfAbrir(){$('ai-panel').classList.add('cfg');cfMsg('');sb.rpc('app_ia_proveedor_estado').then(function(r){if(r.error){cfL=[];}else{cfL=r.data||[];var a=null;cfL.forEach(function(x){if(x.activo){a=x.proveedor;}});if(a){cfP=a;}}cfPinta();if(r.error){$('cf-st').textContent=cfErr(r.error);}});}
+  $('ai-cfg').addEventListener('click',function(){if($('ai-panel').classList.contains('cfg')){$('ai-panel').classList.remove('cfg');}else{cfAbrir();}});
+  $('cf-x').addEventListener('click',function(){$('ai-panel').classList.remove('cfg');});
+  $('cf-pv').addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b){return;}cfP=b.getAttribute('data-p');cfMsg('');cfPinta();});
+  $('cf-eye').addEventListener('click',function(){var i=$('cf-key');i.type=i.type==='password'?'text':'password';});
+  $('cf-save').addEventListener('click',function(){cfMsg('');var b=$('cf-save');b.disabled=true;sb.rpc('app_ia_proveedor_guardar',{p_proveedor:cfP,p_llave:$('cf-key').value.trim(),p_modelo:$('cf-mod').value.trim(),p_usd_entrada:Number($('cf-pi').value)||0,p_usd_salida:Number($('cf-po').value)||0}).then(function(r){b.disabled=false;if(r.error){cfMsg(cfErr(r.error));return;}cfL=r.data||[];cfPinta();cfMsg('Guardado. '+PV[cfP].n+' quedó activo. Vuelve al chat y hazle una pregunta a Simi para probarlo.','ok');},function(e){b.disabled=false;cfMsg(cfErr(e));});});
+  $('cf-del').addEventListener('click',function(){cfMsg('');sb.rpc('app_ia_proveedor_quitar',{p_proveedor:cfP}).then(function(r){if(r.error){cfMsg(cfErr(r.error));return;}cfL=r.data||[];cfPinta();cfMsg('Llave de '+PV[cfP].n+' eliminada.','ok');});});
+  window.aiReset=function(){$('ai-panel').classList.remove('cfg');hist=[];uso=null;M.textContent='';$('ai-panel').classList.remove('on');$('ai-use').classList.remove('on');if(vOn){vCerrar();}};
 })();
 </script>
 </body>
