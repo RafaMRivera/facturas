@@ -753,12 +753,12 @@ th:first-child,td:first-child{text-align:left}
     <div class="cf-b"><button type="button" class="btn pri" id="cf-save">Guardar y activar</button><button type="button" class="btn" id="cf-del">Quitar esta llave</button></div>
     <div class="cf-sep"></div>
     <div class="cf-t"><b>Voz de Simi</b></div>
-    <div class="cf-h">Elige cómo suena Simi al leer sus respuestas. «Del dispositivo» es gratis; OpenAI y Gemini suenan más naturales y se pagan por uso (Gemini tiene capa gratuita).</div>
-    <div class="cf-pv" id="vz-pv"><button type="button" data-v="">Del dispositivo</button><button type="button" data-v="openai">OpenAI</button><button type="button" data-v="gemini">Gemini</button></div>
+    <div class="cf-h">Elige cómo suena Simi. «Del dispositivo» es gratis. OpenAI y Gemini suenan más naturales: si el chat usa el mismo proveedor, dejas la llave vacía y usa la misma. DeepSeek no tiene voz.</div>
+    <div class="cf-pv" id="vz-pv"><button type="button" data-v="">Del dispositivo</button><button type="button" data-v="openai">OpenAI</button><button type="button" data-v="gemini">Gemini</button><button type="button" data-v="elevenlabs">ElevenLabs</button></div>
     <div id="vz-box">
       <label class="cf-l" for="vz-key">Llave de la API de la voz</label>
       <span class="pw"><input type="password" id="vz-key" autocomplete="off" spellcheck="false" placeholder="Pega aquí la llave"><button type="button" id="vz-eye" aria-label="Mostrar u ocultar la llave">👁</button></span>
-      <label class="cf-l" for="vz-voz">Nombre de la voz</label>
+      <label class="cf-l" for="vz-voz">Nombre o ID de la voz</label>
       <input type="text" id="vz-voz" autocomplete="off" spellcheck="false">
       <div class="cf-h" id="vz-h"></div>
     </div>
@@ -1088,7 +1088,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     if(uso&&(uso.hoy>=uso.limite_dia||uso.semana>=uso.limite_semana)){var s0=motivo({motivo:uso.hoy>=uso.limite_dia?'LIMITE_DIA':'LIMITE_SEMANA',uso:uso});add('s',s0);return Promise.resolve(s0);}
     enviando=true;botSt('pensando');var w=add('a','');var dd=el('span','dots');dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));w.appendChild(dd);
     return invocar({pregunta:t,historial:hist.slice(-6)}).then(function(r){enviando=false;botSt('idle');var d=r.data;
-      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v2.7, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
+      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v2.9, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
       if(d.uso){uso=d.uso;pintaUso();}
       if(!d.ok){w.remove();var s2=motivo(d);add('s',s2);return s2;}
       w.textContent=d.respuesta;M.scrollTop=M.scrollHeight;hist.push({role:'user',content:t});hist.push({role:'assistant',content:d.respuesta});
@@ -1142,10 +1142,10 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   function cfAbrir(){vzCarga();$('ai-panel').classList.add('cfg');cfMsg('');sb.rpc('app_ia_proveedor_estado').then(function(r){if(r.error){cfL=[];}else{cfL=r.data||[];var a=null;cfL.forEach(function(x){if(x.activo){a=x.proveedor;}});if(a){cfP=a;}}cfPinta();if(r.error){$('cf-st').textContent=cfErr(r.error);}});}
 
   /* Voz de Simi: dispositivo, OpenAI o Gemini */
-  var VP={openai:{v:'coral',h:'Llave de platform.openai.com → API keys (modelo gpt-4o-mini-tts). Voces: coral, nova, shimmer, sage, alloy. Cuesta céntimos por respuesta.'},gemini:{v:'Kore',h:'Llave de aistudio.google.com → Get API key (modelo gemini-2.5-flash-preview-tts). Voces: Kore, Leda, Aoede, Puck, Zephyr. Tiene capa gratuita.'}};
+  var VP={openai:{v:'coral',h:'Llave de platform.openai.com → API keys (modelo gpt-4o-mini-tts). Voces: coral, nova, shimmer, sage, alloy. Cuesta céntimos por respuesta.'},elevenlabs:{v:'EXAVITQu4vr4xnSDxMaL',h:'Llave de elevenlabs.io → Developers → API Keys. En «Nombre de la voz» va el Voice ID (de Voices → copiar ID); trae uno de ejemplo. Usa el modelo multilingüe, que habla español.'},gemini:{v:'Kore',h:'Llave de aistudio.google.com → Get API key (modelo gemini-2.5-flash-preview-tts). Voces: Kore, Leda, Aoede, Puck, Zephyr. Tiene capa gratuita.'}};
   var vzP='',vzSaved='';
   function vzMsg(s,ok){var m=$('vz-msg');m.textContent=s||'';m.className='amsg'+(s?(ok?' ok':' er'):'');}
-  function vzPinta(){var bs=$('vz-pv').querySelectorAll('button');for(var i=0;i<bs.length;i++){bs[i].classList.toggle('on',bs[i].getAttribute('data-v')===vzP);}$('vz-box').style.display=vzP?'block':'none';if(vzP){$('vz-h').textContent=VP[vzP].h;if(!$('vz-voz').value||vzP!==vzSaved){$('vz-voz').value=VP[vzP].v;}$('vz-key').placeholder=vzSaved===vzP?'Guardada (déjala vacía para conservarla)':'Pega aquí la llave';}}
+  function vzPinta(){var bs=$('vz-pv').querySelectorAll('button');for(var i=0;i<bs.length;i++){bs[i].classList.toggle('on',bs[i].getAttribute('data-v')===vzP);}$('vz-box').style.display=vzP?'block':'none';if(vzP){$('vz-h').textContent=VP[vzP].h;if(!$('vz-voz').value||vzP!==vzSaved){$('vz-voz').value=VP[vzP].v;}$('vz-key').placeholder=vzSaved===vzP?'Guardada (déjala vacía para conservarla)':(vzP==='elevenlabs'?'Pega aquí la llave de ElevenLabs':'Vacía = usar la misma llave del chat (si el chat usa '+(vzP==='openai'?'ChatGPT':'Gemini')+')');}}
   function vzCarga(){sb.rpc('app_voz_estado').then(function(r){var d=r&&r.data;if(r&&!r.error&&d&&d.proveedor){vzSaved=d.proveedor;vzP=d.proveedor;VZ.on=true;$('vz-voz').value=d.voz||VP[d.proveedor].v;}else{vzSaved='';VZ.on=false;}vzPinta();});}
   $('vz-pv').addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b){return;}vzP=b.getAttribute('data-v');vzMsg('');vzPinta();});
   $('vz-eye').addEventListener('click',function(){var k=$('vz-key');k.type=k.type==='password'?'text':'password';});
