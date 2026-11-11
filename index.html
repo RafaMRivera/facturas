@@ -535,6 +535,50 @@ th:first-child,td:first-child{text-align:left}
 @media(max-width:700px){#povl{padding:0}#povl .mdl{border-radius:0;min-height:100%}#povl .mh{position:sticky;top:0;background:var(--surface);z-index:3}#povl .mb{padding:10px 10px 16px}}
 #povl .mdl{max-width:980px}#povl .chart{min-height:0!important;height:auto}#povl table{font-size:11.5px}#povl th,#povl td{white-space:nowrap}#povl .tw{overflow-x:auto}
 .fu{margin-top:4px}
+
+/* ===== v2.6 ===== */
+/* esfera tipo Jarvis */
+.bot,.bot.mini,.bot.big{--s:44px;width:var(--s)!important;height:var(--s)!important;border-radius:50%!important;border:0!important;padding:0;display:inline-block!important;position:relative;
+  background:radial-gradient(circle at 50% 50%,#F2FFF7 0 6%,#8CFFBA 13%,#2FD16B 30%,rgba(10,110,60,.92) 52%,rgba(3,28,14,.96) 72%)!important;
+  box-shadow:0 0 14px rgba(74,222,128,.6),inset 0 0 10px rgba(74,222,128,.55)!important;animation:orbn 3.4s ease-in-out infinite}
+.bot>*{display:none!important}
+.bot:before,.bot.mini:before,.bot.big:before{display:block!important;content:'';position:absolute;inset:-5px;border-radius:50%;background:none!important;-webkit-mask:none!important;mask:none!important;
+  border:1.5px solid transparent;border-top-color:#4ADE80;border-right-color:rgba(74,222,128,.25);border-bottom-color:rgba(74,222,128,.7);animation:spin 3.2s linear infinite!important}
+.bot:after{content:'';position:absolute;inset:4px;border-radius:50%;border:1px dashed rgba(190,255,215,.6);animation:spin 9s linear infinite reverse}
+.bot.big{--s:104px;margin-bottom:16px}
+.bot.mini{--s:34px}.ai-h .bot{--s:34px}#ai-fab .bot{--s:40px}
+#ai-fab{border-radius:50%!important}
+@keyframes orbn{0%,100%{filter:brightness(1)}50%{filter:brightness(1.25)}}
+@keyframes orbt{from{transform:scale(1)}to{transform:scale(1.1)}}
+.bot[data-st=escuchando]:before{animation-duration:1.4s!important}
+.bot[data-st=pensando]:before{animation-duration:.8s!important}.bot[data-st=pensando]:after{animation-duration:2.4s}
+.bot[data-st=hablando]{animation:orbt .45s ease-in-out infinite alternate}
+/* recuadro de la voz: suave, como cuando Claude toma control de la pantalla */
+#ai-voice:before{box-shadow:inset 0 0 0 1.5px rgba(74,222,128,.38),inset 0 0 70px 14px rgba(74,222,128,.17),inset 0 0 160px 34px rgba(34,197,94,.08)!important;animation:glow 4.2s ease-in-out infinite!important}
+/* subcategorías más claras que la categoría */
+.srow .fill{background:linear-gradient(90deg,#9BE8BE,#C9F5DB)!important}
+[data-theme=light] .srow .fill{background:linear-gradient(90deg,#8FD9B1,#BDEBD1)!important}
+/* sección de voz en la configuración */
+.cf-sep{height:1px;background:var(--line);margin:16px 0 10px}
+@media(max-width:700px){
+  #col-adv,#col-sug,#col-acc{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:start}
+  #col-adv .ic,#col-sug .ic,#col-acc .ic{margin:0;padding:7px 8px}
+  #col-adv .fnd,#col-sug .fnd,#col-acc .fnd{font-size:10.5px;line-height:1.35}
+  #col-adv .pill,#col-sug .pill,#col-acc .pill,#col-adv .tag,#col-sug .tag,#col-acc .tag{font-size:8px;padding:1px 5px}
+  #col-adv .ict,#col-sug .ict,#col-acc .ict{gap:3px}
+  #col-adv .ict span:nth-child(n+3),#col-sug .ict span:nth-child(n+3),#col-acc .ict span:nth-child(n+3){display:none}
+  #col-adv .ic a,#col-sug .ic a,#col-acc .ic a,#col-adv .ic .fu,#col-sug .ic .fu,#col-acc .ic .fu{font-size:10px}
+  #col-adv .own,#col-sug .own,#col-acc .own{display:none}
+  .lane{padding:8px}
+}
+
+@media(max-width:700px){
+  #col-adv .ic,#col-sug .ic,#col-acc .ic{padding:6px 7px 5px;border-radius:9px;border-left-width:3px;margin-bottom:0}
+  #col-adv .fnd,#col-sug .fnd,#col-acc .fnd{font-size:9.5px;line-height:1.3}
+  #col-adv .fu,#col-sug .fu,#col-acc .fu{font-size:9px;line-height:1.25}
+  #col-adv .ic *,#col-sug .ic *,#col-acc .ic *{letter-spacing:0}
+  #col-adv .ic div,#col-sug .ic div{margin-top:0}
+}
 </style>
 </head>
 <body>
@@ -695,6 +739,19 @@ th:first-child,td:first-child{text-align:left}
     <div class="cf-h">La tarifa solo sirve para estimar el costo en el medidor. Si la dejas en 0, el medidor cuenta preguntas pero no dinero.</div>
     <div class="amsg" id="cf-msg"></div>
     <div class="cf-b"><button type="button" class="btn pri" id="cf-save">Guardar y activar</button><button type="button" class="btn" id="cf-del">Quitar esta llave</button></div>
+    <div class="cf-sep"></div>
+    <div class="cf-t"><b>Voz de Simi</b></div>
+    <div class="cf-h">Elige cómo suena Simi al leer sus respuestas. «Del dispositivo» es gratis; OpenAI y Gemini suenan más naturales y se pagan por uso (Gemini tiene capa gratuita).</div>
+    <div class="cf-pv" id="vz-pv"><button type="button" data-v="">Del dispositivo</button><button type="button" data-v="openai">OpenAI</button><button type="button" data-v="gemini">Gemini</button></div>
+    <div id="vz-box">
+      <label class="cf-l" for="vz-key">Llave de la API de la voz</label>
+      <span class="pw"><input type="password" id="vz-key" autocomplete="off" spellcheck="false" placeholder="Pega aquí la llave"><button type="button" id="vz-eye" aria-label="Mostrar u ocultar la llave">👁</button></span>
+      <label class="cf-l" for="vz-voz">Nombre de la voz</label>
+      <input type="text" id="vz-voz" autocomplete="off" spellcheck="false">
+      <div class="cf-h" id="vz-h"></div>
+    </div>
+    <div class="amsg" id="vz-msg"></div>
+    <div class="cf-b"><button type="button" class="btn pri" id="vz-save">Guardar voz</button><button type="button" class="btn" id="vz-test">Probar voz</button></div>
     <div class="cf-h">La llave se guarda en tu Supabase, en una tabla cerrada. No queda en esta página ni en GitHub, y después de guardarla solo se muestran sus últimos 4 caracteres.</div>
   </div>
   <div class="ai-m" id="ai-m"></div>
@@ -973,8 +1030,9 @@ $('a-form').addEventListener('submit',function(ev){ev.preventDefault();var em=$(
   p.then(function(r){go.disabled=false;if(r&&r.error){amsg(tr(r.error));}},function(e){go.disabled=false;amsg(tr(e));});});
 $('a-google').addEventListener('click',function(){amsg('');sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:here()}}).then(function(r){if(r.error){amsg(tr(r.error));}},function(e){amsg(tr(e));});});
 $('b-out').addEventListener('click',function(){sb.auth.signOut();});
+function nomDe(u){var md=(u&&u.user_metadata)||{};var n=md.given_name||md.name||md.full_name||'';if(n){n=String(n).trim().split(/\s+/)[0];}else{var l=String((u&&u.email)||'').split('@')[0];if(/^rafael/i.test(l)){n='Rafael';}else{var m=/^[A-Za-zÁÉÍÓÚáéíóúñÑ]+/.exec(l);n=m?m[0]:'';}}return n?n.charAt(0).toUpperCase()+n.slice(1).toLowerCase():'';}
 function sinAcceso(){bloqueado=true;sb.auth.getUser().then(function(u){var em=(u.data&&u.data.user&&u.data.user.email)||'esta cuenta';sb.auth.signOut().then(function(){setMode('in');view('v-login');amsg('La cuenta '+em+' no está autorizada para ver este tablero.');});});}
-function entrar(session){var id=session.user.id;if(uid===id&&!$('fe').classList.contains('hide')){return;}uid=id;bloqueado=false;$('u-mail').textContent=session.user.email||'';view('fe');DATA={};P={mes:'',categoria:'',subcategoria:'',proveedor:'',detalle:'',factura:'',productos:''};pend={};lastApplied=null;if(window.aiReset){window.aiReset();}if(window.flowFit){window.flowFit();}fire();load(false);}
+function entrar(session){var id=session.user.id;if(uid===id&&!$('fe').classList.contains('hide')){return;}uid=id;bloqueado=false;$('u-mail').textContent=session.user.email||'';window.__nombre=nomDe(session.user);view('fe');DATA={};P={mes:'',categoria:'',subcategoria:'',proveedor:'',detalle:'',factura:'',productos:''};pend={};lastApplied=null;if(window.aiReset){window.aiReset();}if(window.flowFit){window.flowFit();}fire();load(false);}
 function salir(){uid=null;DATA={};if(!bloqueado){amsg('');}if(mode!=='newpass'){setMode(mode==='up'?'in':mode);}view('v-login');}
 (function(){var h=location.hash||'';if(/error_description=/.test(h)){try{var d=decodeURIComponent(h.split('error_description=')[1].split('&')[0].replace(/\+/g,' '));setTimeout(function(){amsg(tr(d));},50);}catch(e){}}})();
 setMode('in');
@@ -999,23 +1057,26 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   function traeUso(){return sb.rpc('app_ia_uso_resumen').then(function(r){if(!r.error&&r.data){uso=r.data;pintaUso();}return r;});}
   function textoUso(){if(!uso){return 'Todavía no puedo leer el consumo. Falta correr el archivo asistente_supabase.sql en Supabase.';}return 'Hoy llevas el '+Math.round(Math.min(1,uso.hoy/uso.limite_dia)*100)+'% de tu límite diario. Esta semana, el '+Math.round(Math.min(1,uso.semana/uso.limite_semana)*100)+'%; se reinicia el lunes '+fechaC(uso.reinicia_semana)+'.';}
   function paraVoz(t){return String(t).replace(/US\$\s?([\d.,]+)/g,'$1 dólares').replace(/\$\s?([\d.]+)(?:\s*\(COP\))?/g,function(m,n){return n.replace(/\./g,'')+' pesos';}).replace(/[«»*_#`]/g,'');}
-  function hablar(t,fin){if(!('speechSynthesis' in window)){if(fin){fin();}return;}try{speechSynthesis.cancel();}catch(e){}var u=new SpeechSynthesisUtterance(paraVoz(t));u.lang='es-CO';var v=vozLatina();if(v){u.voice=v;u.lang=v.lang;}u.rate=1.08;u.pitch=1.2;var done=false;function end(){if(done){return;}done=true;botSt('idle');if(fin){fin();}}u.onend=end;u.onerror=end;botSt('hablando');speechSynthesis.speak(u);}
+  var VZ={on:false},AU=null;
+  function nube(t){return invocar({tts:paraVoz(t).slice(0,700)}).then(function(r){var d=r&&r.data;if(!r||r.error||!d||!d.ok||!d.audio){return false;}return new Promise(function(res){var a=new Audio('data:'+d.mime+';base64,'+d.audio);AU=a;var done=false;function e(ok){if(done){return;}done=true;if(AU===a){AU=null;}botSt('idle');res(ok);}a.onended=function(){e(true);};a.onerror=function(){e(false);};var pr=a.play();if(pr&&pr.catch){pr.catch(function(){e(false);});}});},function(){return false;});}
+  function hablar(t,fin){if(VZ.on){botSt('hablando');nube(t).then(function(ok){if(!ok){hablarNav(t,fin);}else if(fin){fin();}});return;}hablarNav(t,fin);}
+  function hablarNav(t,fin){if(!('speechSynthesis' in window)){if(fin){fin();}return;}try{speechSynthesis.cancel();}catch(e){}var u=new SpeechSynthesisUtterance(paraVoz(t));u.lang='es-CO';var v=vozLatina();if(v){u.voice=v;u.lang=v.lang;}u.rate=1.08;u.pitch=1.2;var done=false;function end(){if(done){return;}done=true;botSt('idle');if(fin){fin();}}u.onend=end;u.onerror=end;botSt('hablando');speechSynthesis.speak(u);}
   /* Voz en español: primero colombiana, luego latina; la de España solo si el equipo no tiene otra */
   function vozLatina(){var vs=[];try{vs=speechSynthesis.getVoices()||[];}catch(e){}var es=vs.filter(function(x){return /^es/i.test(x.lang);});if(!es.length){return null;}var ord=['CO','MX','US','419','PE','EC','VE','CL','AR'];function pts(x){var m=/^es[-_]([A-Za-z0-9]+)/.exec(x.lang);var r=m?m[1].toUpperCase():'';var i=ord.indexOf(r);var p=i>=0?100-i*5:(r==='ES'?10:50);if(/colombia/i.test(x.name)){p+=30;}if(/natural|neural|online|google/i.test(x.name)){p+=12;}if(/salome|dalia|paola|sabina|paulina|camila|valentina|elena|female|mujer/i.test(x.name)){p+=15;}if(/jorge|gonzalo|pablo|raul|diego|male|hombre/i.test(x.name)&&!/female/i.test(x.name)){p-=15;}return p;}return es.sort(function(a,b){return pts(b)-pts(a);})[0];}
   try{speechSynthesis.getVoices();speechSynthesis.addEventListener('voiceschanged',function(){});}catch(e){}
-  function callar(){try{speechSynthesis.cancel();}catch(e){}botSt('idle');}
+  function callar(){if(AU){try{AU.pause();}catch(e){}AU=null;}try{speechSynthesis.cancel();}catch(e){}botSt('idle');}
   function esConsumo(t){var n=normT(t).replace(/[¿?¡!.,]/g,'').trim();return n.length<60&&/^(consumo|uso|limite|limites|cuanto (llevo|he consumido|he gastado en (la )?(api|ia))|cuantas preguntas (llevo|me quedan))/.test(n)||/consumo de (la )?(api|ia|asistente)/.test(n);}
   function motivo(d){var m=d&&d.motivo;if(m==='LIMITE_DIA'){return 'Llegaste al tope de hoy ('+d.uso.limite_dia+' preguntas). Vuelve a estar disponible el '+fechaC(d.uso.reinicia_dia)+'.';}if(m==='LIMITE_SEMANA'){return 'Llegaste al tope de la semana ('+d.uso.limite_semana+' preguntas). Se reinicia el lunes '+fechaC(d.uso.reinicia_semana)+'.';}if(m==='SIN_LLAVE'){return 'Simi todavía no tiene una IA conectada. Toca «Conexión IA», abajo a la derecha, y pega tu llave.';}if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}return 'No pude responder en este momento. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
   /* La función puede llamarse «asistente» o «quick-processor» (nombre que le puso Supabase) */
   var FN=['quick-processor','asistente'];var fnOk=null;
-  function invocar(body){if(fnOk){return sb.functions.invoke(fnOk,{body:body});}return sb.functions.invoke(FN[0],{body:body}).then(function(r){if(!r.error&&r.data){fnOk=FN[0];return r;}return sb.functions.invoke(FN[1],{body:body}).then(function(r2){if(!r2.error&&r2.data){fnOk=FN[1];}return r2;});});}
+  function invocar(body){body.nombre=window.__nombre||'';if(fnOk){return sb.functions.invoke(fnOk,{body:body});}return sb.functions.invoke(FN[0],{body:body}).then(function(r){if(!r.error&&r.data){fnOk=FN[0];return r;}return sb.functions.invoke(FN[1],{body:body}).then(function(r2){if(!r2.error&&r2.data){fnOk=FN[1];}return r2;});});}
   /* Envía la pregunta; devuelve una promesa con el texto que se mostró */
   function preguntar(t){t=String(t||'').trim();if(!t||enviando){return Promise.resolve('');}var hr=M.querySelector('.ai-hero');if(hr){hr.remove();}add('u',t);
     if(esConsumo(t)){return traeUso().then(function(){var s=textoUso();add('a',s);$('ai-use').classList.add('on');return s;});}
     if(uso&&(uso.hoy>=uso.limite_dia||uso.semana>=uso.limite_semana)){var s0=motivo({motivo:uso.hoy>=uso.limite_dia?'LIMITE_DIA':'LIMITE_SEMANA',uso:uso});add('s',s0);return Promise.resolve(s0);}
     enviando=true;botSt('pensando');var w=add('a','');var dd=el('span','dots');dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));w.appendChild(dd);
     return invocar({pregunta:t,historial:hist.slice(-6)}).then(function(r){enviando=false;botSt('idle');var d=r.data;
-      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v2.5, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
+      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v2.6, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
       if(d.uso){uso=d.uso;pintaUso();}
       if(!d.ok){w.remove();var s2=motivo(d);add('s',s2);return s2;}
       w.textContent=d.respuesta;M.scrollTop=M.scrollHeight;hist.push({role:'user',content:t});hist.push({role:'assistant',content:d.respuesta});
@@ -1053,7 +1114,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   function vEscucha(){if(!vOn){return;}$('v-tap').classList.add('hide');est('escuchando','Te escucho');var tx=$('v-tx');tx.className='v-tx me';tx.textContent='';
     oir(function(p){tx.textContent=p;},function(f){if(!vOn){return;}tx.textContent=f;est('pensando','Consultando tus facturas');preguntar(f).then(function(s){if(!vOn){return;}tx.className='v-tx';tx.textContent=s;est('hablando','Simi');hablar(s,function(){if(vOn){setTimeout(vEscucha,350);}});});},
       function(why){if(!vOn){return;}if(why==='nosr'){est('pausa','Sin dictado');tx.className='v-tx';tx.textContent='Este navegador no permite dictar por voz. Ábrelo en Chrome, o escribe tu pregunta en el chat.';return;}if(why==='not-allowed'||why==='service-not-allowed'){est('pausa','Micrófono bloqueado');tx.className='v-tx';tx.textContent='Dale permiso al micrófono en el candado de la barra de direcciones y vuelve a entrar.';return;}est('pausa','En pausa');tx.textContent='No te escuché.';$('v-tap').classList.remove('hide');});}
-  function vAbrir(){callar();pararRec();vOn=true;V.classList.add('on');document.body.style.overflow='hidden';t0=0;raf=requestAnimationFrame(onda);try{speechSynthesis.getVoices();}catch(e){}vEscucha();}
+  function vAbrir(){callar();pararRec();vOn=true;V.classList.add('on');document.body.style.overflow='hidden';t0=0;raf=requestAnimationFrame(onda);try{speechSynthesis.getVoices();}catch(e){}var nm=window.__nombre||'';var gr='Hola'+(nm?', '+nm:'')+'. Estoy en marcha, ¿qué deseas consultar?';$('v-tap').classList.add('hide');est('hablando','Simi');var tx0=$('v-tx');tx0.className='v-tx';tx0.textContent=gr;hablar(gr,function(){if(vOn){setTimeout(vEscucha,200);}});}
   function vCerrar(){vOn=false;V.classList.remove('on');if(!(P.detalle||P.factura)){document.body.style.overflow='';}cancelAnimationFrame(raf);callar();pararRec();}
   $('ai-vmode').addEventListener('click',vAbrir);$('v-x').addEventListener('click',vCerrar);$('v-tap').addEventListener('click',vEscucha);
   document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&vOn){vCerrar();}});
@@ -1066,7 +1127,21 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     var bs=$('cf-pv').children;for(var i=0;i<bs.length;i++){var p=bs[i].getAttribute('data-p');var r=cfRow(p);bs[i].classList.toggle('on',p===cfP);bs[i].classList.toggle('act',!!(r&&r.activo));}
     var r0=cfRow(cfP);var d=PV[cfP];$('cf-key').value='';$('cf-key').placeholder=r0&&r0.tiene_llave?('Guardada ····'+r0.final+' (déjala vacía para conservarla)'):'Pega aquí la llave de '+d.n;$('cf-kh').textContent=d.kh;$('cf-mod').value=r0?r0.modelo:d.mod;$('cf-mh').textContent=d.mh;$('cf-pi').value=r0?r0.usd_entrada:d.pi;$('cf-po').value=r0?r0.usd_salida:d.po;$('cf-del').style.display=r0&&r0.tiene_llave?'':'none';}
   function cfErr(e){var m=String((e&&e.message)||e||'');if(/FALTA_LLAVE/.test(m)){return 'Falta pegar la llave.';}if(/FALTA_MODELO/.test(m)){return 'Falta escribir el nombre del modelo.';}if(/app_ia_proveedor|PGRST202|schema cache/i.test(m+' '+((e&&e.code)||''))){return 'Falta correr el archivo asistente_supabase.sql en Supabase.';}return m||'No se pudo guardar. Intenta de nuevo.';}
-  function cfAbrir(){$('ai-panel').classList.add('cfg');cfMsg('');sb.rpc('app_ia_proveedor_estado').then(function(r){if(r.error){cfL=[];}else{cfL=r.data||[];var a=null;cfL.forEach(function(x){if(x.activo){a=x.proveedor;}});if(a){cfP=a;}}cfPinta();if(r.error){$('cf-st').textContent=cfErr(r.error);}});}
+  function cfAbrir(){vzCarga();$('ai-panel').classList.add('cfg');cfMsg('');sb.rpc('app_ia_proveedor_estado').then(function(r){if(r.error){cfL=[];}else{cfL=r.data||[];var a=null;cfL.forEach(function(x){if(x.activo){a=x.proveedor;}});if(a){cfP=a;}}cfPinta();if(r.error){$('cf-st').textContent=cfErr(r.error);}});}
+
+  /* Voz de Simi: dispositivo, OpenAI o Gemini */
+  var VP={openai:{v:'coral',h:'Llave de platform.openai.com → API keys (modelo gpt-4o-mini-tts). Voces: coral, nova, shimmer, sage, alloy. Cuesta céntimos por respuesta.'},gemini:{v:'Kore',h:'Llave de aistudio.google.com → Get API key (modelo gemini-2.5-flash-preview-tts). Voces: Kore, Leda, Aoede, Puck, Zephyr. Tiene capa gratuita.'}};
+  var vzP='',vzSaved='';
+  function vzMsg(s,ok){var m=$('vz-msg');m.textContent=s||'';m.className='amsg'+(s?(ok?' ok':' er'):'');}
+  function vzPinta(){var bs=$('vz-pv').querySelectorAll('button');for(var i=0;i<bs.length;i++){bs[i].classList.toggle('on',bs[i].getAttribute('data-v')===vzP);}$('vz-box').style.display=vzP?'block':'none';if(vzP){$('vz-h').textContent=VP[vzP].h;if(!$('vz-voz').value||vzP!==vzSaved){$('vz-voz').value=VP[vzP].v;}$('vz-key').placeholder=vzSaved===vzP?'Guardada (déjala vacía para conservarla)':'Pega aquí la llave';}}
+  function vzCarga(){sb.rpc('app_voz_estado').then(function(r){var d=r&&r.data;if(r&&!r.error&&d&&d.proveedor){vzSaved=d.proveedor;vzP=d.proveedor;VZ.on=true;$('vz-voz').value=d.voz||VP[d.proveedor].v;}else{vzSaved='';VZ.on=false;}vzPinta();});}
+  $('vz-pv').addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b){return;}vzP=b.getAttribute('data-v');vzMsg('');vzPinta();});
+  $('vz-eye').addEventListener('click',function(){var k=$('vz-key');k.type=k.type==='password'?'text':'password';});
+  $('vz-save').addEventListener('click',function(){vzMsg('');
+    if(!vzP){sb.rpc('app_voz_quitar').then(function(r){if(r.error){vzMsg(/app_voz|function|schema cache/i.test(r.error.message)?'Falta instalar SIMI_voz.sql en Supabase.':r.error.message,false);return;}VZ.on=false;vzSaved='';vzMsg('Listo: Simi usará la voz del dispositivo.',true);});return;}
+    sb.rpc('app_voz_guardar',{p_proveedor:vzP,p_llave:$('vz-key').value.trim(),p_voz:$('vz-voz').value.trim()}).then(function(r){if(r.error){vzMsg(/FALTA_LLAVE/.test(r.error.message)?'Pega la llave de la voz.':(/app_voz|function|schema cache/i.test(r.error.message)?'Falta instalar SIMI_voz.sql en Supabase.':r.error.message),false);return;}$('vz-key').value='';vzSaved=vzP;VZ.on=true;vzPinta();vzMsg('Voz guardada. Toca «Probar voz».',true);});});
+  $('vz-test').addEventListener('click',function(){vzMsg('Probando…',true);callar();var nm=window.__nombre||'';invocar({tts:'Hola'+(nm?', '+nm:'')+'. Así sueno. Estoy en marcha, ¿qué deseas consultar?'}).then(function(r){var d=r&&r.data;if(!d||!d.ok||!d.audio){vzMsg(d&&d.detalle?String(d.detalle).slice(0,200):'No pude generar la voz. Revisa la llave, el nombre de la voz y que hayas actualizado la función de Supabase.',false);return;}vzMsg('',true);var a=new Audio('data:'+d.mime+';base64,'+d.audio);AU=a;var p=a.play();if(p&&p.catch){p.catch(function(){vzMsg('Tu navegador bloqueó el audio. Toca de nuevo.',false);});}},function(){vzMsg('No pude conectar.',false);});});
+  vzCarga();
   $('ai-cfg').addEventListener('click',function(){if($('ai-panel').classList.contains('cfg')){$('ai-panel').classList.remove('cfg');}else{cfAbrir();}});
   $('cf-x').addEventListener('click',function(){$('ai-panel').classList.remove('cfg');});
   $('cf-pv').addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b){return;}cfP=b.getAttribute('data-p');cfMsg('');cfPinta();});
@@ -1097,6 +1172,14 @@ try{if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEve
   function cierra(){po.style.display='none';document.body.style.overflow='';}
   $('pclose').addEventListener('click',cierra);po.addEventListener('click',function(e){if(e.target===po){cierra();}});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&po.style.display==='flex'){cierra();}});
+  function unid(n){var u=String(n||'').toUpperCase();
+    if(/(^|[^A-Z])(KG|KGS|KILO|KILOS|KILOGRAMO)([^A-Z]|$)/.test(u)){return {por:'kilo',pl:'kilos'};}
+    if(/GASOLINA|ACPM|DIESEL|DIÉSEL|COMBUSTIBLE/.test(u)){return {por:'galón',pl:'galones',est:true};}
+    if(/(^|[^A-Z])(LT|LTS|LITRO|LITROS)([^A-Z]|$)/.test(u)){return {por:'litro',pl:'litros'};}
+    if(/(^|[^A-Z])(LB|LBS|LIBRA|LIBRAS)([^A-Z]|$)/.test(u)){return {por:'libra',pl:'libras'};}
+    var m=/(\d+(?:[.,]\d+)?)\s*(ML|CC|GR|G|KG|LT|L|UND|UN)(?![A-Z])/.exec(u);
+    if(m){var q=m[1].replace('.',','),s=m[2];if(s==='GR'){s='g';}if(s==='ML'||s==='CC'){s='ml';}if(s==='LT'){s='L';}if(s==='UN'){s='und';}if(s==='G'){s='g';}if(s==='UND'){return {por:'unidad (paquete de '+q+')',pl:'unidades'};}return {por:'unidad (presentación de '+q+' '+s+')',pl:'unidades'};}
+    return {por:'unidad',pl:'unidades'};}
   function cant(n){var s=(Math.round(Number(n)*1000)/1000).toFixed(3).replace(/0+$/,'').replace(/\.$/,'');return s.replace('.',',');}
   function mlab(m,multi){var a=MESC[Number(m.slice(5))-1];return multi?a+' '+m.slice(2,4):a;}
   function sig(m){var y=Number(m.slice(0,4)),mo=Number(m.slice(5))+1;if(mo>12){mo=1;y++;}return y+'-'+(mo<10?'0':'')+mo;}
@@ -1104,19 +1187,19 @@ try{if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEve
   function msg(t){$('pk').textContent='';$('pch').textContent='';$('ptab').textContent='';$('pnote').textContent=t;}
   function pinta(d){
     var ms=(d.meses||[]).map(function(x){return {mes:x.mes,compras:Number(x.compras),cant:Number(x.cantidad),p:Number(x.precio),mn:Number(x.minimo),mx:Number(x.maximo)};});
-    $('pt').textContent=d.producto||'Producto';
+    $('pt').textContent=d.producto||'Producto';var UN=unid(d.producto);
     if(!ms.length){$('ps').textContent='';msg('Este producto no tiene compras con cantidad y precio.');return;}
     var multi=ms[0].mes.slice(0,4)!==ms[ms.length-1].mes.slice(0,4);
     var tot=ms.reduce(function(a,x){return a+x.compras;},0);
-    $('ps').textContent=tot+' compra'+(tot===1?'':'s')+' · de '+mesLabel(ms[0].mes)+' a '+mesLabel(ms[ms.length-1].mes)+' · precio por unidad (kilo, unidad o litro, según el producto)';
+    $('ps').textContent=tot+' compra'+(tot===1?'':'s')+' · de '+mesLabel(ms[0].mes)+' a '+mesLabel(ms[ms.length-1].mes)+' · costo promedio por '+UN.por;
     var hi=ms.reduce(function(a,x){return x.p>a.p?x:a;},ms[0]);var lo=ms.reduce(function(a,x){return x.p<a.p?x:a;},ms[0]);
     var ul=ms[ms.length-1],an=ms.length>1?ms[ms.length-2]:null;
     var k=$('pk');k.textContent='';
-    var u=d.ultima;k.appendChild(kpi('','Último precio pagado',u?'$'+thou(u.precio):'—',u?'el '+u.fecha+' · '+cant(u.cantidad)+' unidades':''));
-    if(an){var df=ul.p-an.p,pc2=an.p?df/an.p*100:0;k.appendChild(kpi(df>0?'warn':(df<0?'':'tax'),'Último mes vs anterior',(df>0?'▲ ':(df<0?'▼ ':''))+(df>=0?'+':'−')+'$'+thou(Math.abs(df))+' ('+(pc2>=0?'+':'−')+Math.abs(pc2).toFixed(1).replace('.',',')+'%)',mlab(ul.mes,multi)+' $'+thou(ul.p)+' vs '+mlab(an.mes,multi)+' $'+thou(an.p)));}
+    var u=d.ultima;k.appendChild(kpi('','Último precio pagado (por '+UN.por+')',u?'$'+thou(u.precio):'—',u?'el '+u.fecha+' · '+cant(u.cantidad)+' '+UN.pl:''));
+    if(an){var df=ul.p-an.p,pc2=an.p?df/an.p*100:0;k.appendChild(kpi(df>0?'warn':(df<0?'':'tax'),'Costo promedio: último mes vs anterior',(df>0?'▲ ':(df<0?'▼ ':''))+(df>=0?'+':'−')+'$'+thou(Math.abs(df))+' ('+(pc2>=0?'+':'−')+Math.abs(pc2).toFixed(1).replace('.',',')+'%)',mlab(ul.mes,multi)+' $'+thou(ul.p)+' vs '+mlab(an.mes,multi)+' $'+thou(an.p)));}
     else{k.appendChild(kpi('tax','Último mes',' $'+thou(ul.p),mlab(ul.mes,multi)+' · solo hay un mes con compras'));}
-    k.appendChild(kpi('warn','Mes más caro','$'+thou(hi.p),mesLabel(hi.mes)+' · máximo pagado $'+thou(hi.mx)));
-    k.appendChild(kpi('','Mes más barato','$'+thou(lo.p),mesLabel(lo.mes)+' · mínimo pagado $'+thou(lo.mn)));
+    k.appendChild(kpi('warn','Mes más caro (costo promedio)','$'+thou(hi.p),mesLabel(hi.mes)+' · máximo pagado $'+thou(hi.mx)));
+    k.appendChild(kpi('','Mes más barato (costo promedio)','$'+thou(lo.p),mesLabel(lo.mes)+' · mínimo pagado $'+thou(lo.mn)));
     // gráfico: todos los meses del rango (los meses sin compras quedan como hueco)
     var all=[],cm=ms[0].mes;while(cm<=ms[ms.length-1].mes){all.push(cm);cm=sig(cm);}
     var by={};ms.forEach(function(x){by[x.mes]=x;});
@@ -1132,13 +1215,13 @@ try{if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEve
     svg.append('path').datum(ms).attr('d',d3.line().x(function(q){return x(q.mes);}).y(function(q){return y(q.p);})).attr('fill','none').attr('stroke',CA).attr('stroke-width',2.5);
     ms.forEach(function(q){var col=q===hi?'#D64545':(q===lo?'#4FA3E0':CA);svg.append('circle').attr('cx',x(q.mes)).attr('cy',y(q.p)).attr('r',q===hi||q===lo?6:4.5).attr('fill',col).attr('stroke',CS).attr('stroke-width',1.5);
       svg.append('text').attr('x',x(q.mes)).attr('y',y(q.p)-11).attr('text-anchor','middle').attr('fill',col).style('font-size',mob?'8.5px':'10.5px').style('font-weight','700').style('paint-order','stroke').attr('stroke',CS).attr('stroke-width',3).text('$'+thou(q.p));});
-    svg.append('text').attr('x',m.l).attr('y',14).attr('fill',CM).style('font-size','10.5px').style('font-weight','700').text('Precio promedio por mes');
+    svg.append('text').attr('x',m.l).attr('y',14).attr('fill',CM).style('font-size','10.5px').style('font-weight','700').text('Costo promedio por '+UN.por+', por mes');
     // tabla por mes
-    var tb=$('ptab');tb.textContent='';var tbl=document.createElement('table');tbl.innerHTML='<thead><tr><th>Mes</th><th>Compras</th><th>Cantidad</th><th>Precio promedio</th><th>Mín – Máx</th><th>Cambio</th></tr></thead>';var bd=document.createElement('tbody');
+    var tb=$('ptab');tb.textContent='';var tbl=document.createElement('table');tbl.innerHTML='<thead><tr><th>Mes</th><th>Compras</th><th>Cantidad</th><th>Costo promedio</th><th>Mín – Máx</th><th>Cambio</th></tr></thead>';var bd=document.createElement('tbody');
     ms.forEach(function(q,i){var tr=document.createElement('tr');var vr='—';var st='';if(i>0){var dd=q.p-ms[i-1].p,pp=ms[i-1].p?dd/ms[i-1].p*100:0;vr=(dd>0?'▲ +':(dd<0?'▼ −':''))+(dd===0?'sin cambio':'$'+thou(Math.abs(dd))+' ('+Math.abs(pp).toFixed(1).replace('.',',')+'%)');st=dd>0?'color:#D64545;font-weight:700':(dd<0?'color:#1E8E3E;font-weight:700':'');}
       [mlab(q.mes,true),String(q.compras),cant(q.cant),'$'+thou(q.p),'$'+thou(q.mn)+(q.mx!==q.mn?' – $'+thou(q.mx):''),vr].forEach(function(c,j){var td=document.createElement('td');td.textContent=c;if(j===5&&st){td.setAttribute('style',st);}tr.appendChild(td);});bd.appendChild(tr);});
     tbl.appendChild(bd);tb.appendChild(tbl);
-    var pv=(d.proveedores||[]);var nt='En el gráfico: punto rojo = mes más caro, azul = mes más barato, barra = rango de mínimo a máximo pagado. Cómo se calcula: precio promedio = valor de las líneas ÷ cantidad comprada en el mes. El cambio compara cada mes con el mes anterior que tuvo compras. '+(pv.length>1?'Proveedores del producto (de más barato a más caro): '+pv.map(function(q){return q.proveedor+' $'+thou(q.precio)+' ('+q.compras+')';}).join('; ')+'.':(pv.length===1?'Único proveedor: '+pv[0].proveedor+'.':''));
+    var pv=(d.proveedores||[]);var nt='En el gráfico: punto rojo = mes más caro, azul = mes más barato, barra = rango de mínimo a máximo pagado. Cómo se calcula: costo promedio = valor de las líneas ÷ cantidad comprada en el mes. La unidad de medida ('+UN.por+') se deduce del nombre del producto'+(UN.est?' (estimada)':'')+'; si el nombre no la trae, se muestra por unidad. El cambio compara cada mes con el mes anterior que tuvo compras. '+(pv.length>1?'Proveedores del producto (de más barato a más caro): '+pv.map(function(q){return q.proveedor+' $'+thou(q.precio)+' ('+q.compras+')';}).join('; ')+'.':(pv.length===1?'Único proveedor: '+pv[0].proveedor+'.':''));
     var cur2=new Date();var cmx=cur2.getFullYear()+'-'+(cur2.getMonth()+1<10?'0':'')+(cur2.getMonth()+1);if(ms[ms.length-1].mes===cmx){nt+=' El mes en curso está incompleto.';}
     $('pnote').textContent=nt;
   }
@@ -1149,6 +1232,15 @@ try{if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEve
       pinta(r.data||{});},function(){$('ps').textContent='';msg('No pude conectar. Revisa tu conexión.');});
   };
 })();
+
+/* Botón «atrás» del celular: cierra la capa abierta (voz, historial de precio, detalle, ajustes, Simi) */
+(function(){var pushed=0,ign=false;
+  function capas(){var l=[];var V=document.getElementById('ai-voice'),P=document.getElementById('povl'),O=document.getElementById('ovl'),A=document.getElementById('ai-panel');
+    if(A&&A.classList.contains('on')){l.push('ai-x');}if(A&&A.classList.contains('on')&&A.classList.contains('cfg')){l.push('cf-x');}if(O&&O.style.display==='flex'){l.push('mclose');}if(P&&P.style.display==='flex'){l.push('pclose');}if(V&&V.classList.contains('on')){l.push('v-x');}return l;}
+  function ordenar(){var A=document.getElementById('ai-panel'),V=document.getElementById('ai-voice'),P=document.getElementById('povl'),O=document.getElementById('ovl');var l=[];if(V&&V.classList.contains('on')){l.push('v-x');}else if(P&&P.style.display==='flex'){l.push('pclose');}else if(O&&O.style.display==='flex'){l.push('mclose');}else if(A&&A.classList.contains('on')){l.push(A.classList.contains('cfg')?'cf-x':'ai-x');}return l[0]||'';}
+  function sync(){var n=capas().length;while(pushed<n){try{history.pushState({af:1},'');}catch(e){}pushed++;}if(pushed>n){var d=pushed-n;pushed=n;ign=true;try{history.go(-d);}catch(e){ign=false;}}}
+  window.addEventListener('popstate',function(){if(ign){ign=false;return;}var id=ordenar();if(id){pushed=Math.max(0,pushed-1);var b=document.getElementById(id);if(b){b.click();}}else{pushed=0;}});
+  var mo=new MutationObserver(sync);['ai-panel','ai-voice','povl','ovl'].forEach(function(i){var e=document.getElementById(i);if(e){mo.observe(e,{attributes:true,attributeFilter:['class','style']});}});})();
 </script>
 </body>
 </html>
