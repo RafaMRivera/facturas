@@ -674,6 +674,43 @@ th:first-child,td:first-child{text-align:left}
 #ai-ring{display:none!important}
 .ai-meta>span:first-child{display:none}
 .ai-meta{justify-content:flex-end}
+
+/* ajustes v3.4 */
+#ai-fab{width:66px;height:66px;background:none!important;border:0!important;box-shadow:none!important;border-radius:50%!important;touch-action:none;animation:jvfloat 4.6s ease-in-out infinite;filter:drop-shadow(0 0 10px rgba(74,222,128,.5))}
+#ai-fab:after{display:none!important}
+#ai-fab:hover{transform:none}
+.jv{position:relative;width:60px;height:60px;display:block;pointer-events:none}
+.jv i{position:absolute;border-radius:50%;border:2px solid transparent;display:block}
+.jv .r0{inset:0;border:1.5px dashed rgba(74,222,128,.45);animation:jvs 14s linear infinite}
+.jv .r1{inset:5px;border-top-color:#4ADE80;border-right-color:rgba(74,222,128,.35);animation:jvs 3s linear infinite}
+.jv .r2{inset:12px;border-bottom-color:#B6FF5C;border-left-color:rgba(182,255,92,.3);animation:jvs 2.2s linear infinite reverse}
+.jv .r3{inset:19px;border-top-color:#9DF7C0;border-right-color:rgba(157,247,192,.35);animation:jvs 1.5s linear infinite}
+.jv u{position:absolute;inset:24px;border-radius:50%;background:radial-gradient(circle,#fff 0 20%,#B6FF5C 42%,rgba(74,222,128,.45) 64%,transparent 74%);animation:jvp 1.8s ease-in-out infinite}
+@keyframes jvs{to{transform:rotate(360deg)}}
+@keyframes jvp{0%,100%{transform:scale(.8);opacity:.8}50%{transform:scale(1.25);opacity:1}}
+@keyframes jvfloat{0%,100%{translate:0 0}50%{translate:0 -6px}}
+@media (prefers-reduced-motion:reduce){#ai-fab,.jv i,.jv u{animation:none!important}}
+/* medidor extendido tipo Claude */
+.ai-use{display:block!important;padding:8px 16px 10px;background:var(--s-sub);border-bottom:1px solid var(--s-line)}
+.ai-use .ur{display:grid;grid-template-columns:minmax(92px,1.1fr) 1.4fr auto;align-items:center;gap:10px;margin:0 0 7px}
+.ai-use .ur:last-child{margin-bottom:0}
+.ai-use .ul{display:block}
+.ai-use .ul b{display:block;font-size:12px;color:var(--head)}
+.ai-use .ul .rs{display:block;font-size:10px;color:var(--muted);line-height:1.25}
+.ai-use .ub{margin:0;height:7px}
+.ai-use .up{font-size:11px;color:var(--muted);white-space:nowrap}
+/* Lectura homogénea */
+#col-adv,#col-sug,#col-acc{align-items:stretch}
+#col-adv .ic,#col-sug .ic,#col-acc .ic{display:flex;flex-direction:column;height:100%}
+#col-adv .fnd,#col-sug .fnd,#col-acc .fnd{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+#col-adv .ic:last-child:nth-child(odd),#col-sug .ic:last-child:nth-child(odd),#col-acc .ic:last-child:nth-child(odd){grid-column:1/-1}
+#col-adv .ic>:last-child,#col-sug .ic>:last-child,#col-acc .ic>:last-child{margin-top:auto}
+/* clasificar: alerta */
+.clerr{display:none;color:var(--red);background:var(--red-soft);border:1px solid var(--red-line);border-radius:9px;padding:7px 10px;font-size:12px;font-weight:600}
+.clrow.bad .clerr{display:block}
+.clrow.bad select{border-color:var(--red)!important;box-shadow:0 0 0 3px var(--red-soft)}
+.clrow.bad{animation:clshake .35s}
+@keyframes clshake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 </style>
 </head>
 <body>
@@ -816,7 +853,7 @@ th:first-child,td:first-child{text-align:left}
 <button data-t="sec5"><svg viewBox="0 0 24 24"><path d="M4 21V8l8-5 8 5v13M9 21v-7h6v7"/></svg>Proveedores</button>
 <button data-t="sec8"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Ítems</button>
 </nav>
-<button id="ai-fab" title="Pau, tu asistente" aria-label="Abrir a Pau, tu asistente"><span class="bot mini"><i></i><i></i><u></u></span><em></em></button>
+<button id="ai-fab" title="Pau, tu asistente" aria-label="Abrir a Pau, tu asistente"><span class="jv"><i class="r0"></i><i class="r1"></i><i class="r2"></i><i class="r3"></i><u></u></span></button>
 <div id="ai-panel" role="dialog" aria-label="Pau, asistente financiera">
   <div class="ai-h"><div><small id="ai-st"><em></em>En línea</small></div><span class="sp"></span>
     <button class="ring" id="ai-ring" title="Ver consumo" aria-label="Ver consumo"><svg viewBox="0 0 36 36"><circle class="bg" cx="18" cy="18" r="15"/><circle class="fg" id="ai-ring-fg" cx="18" cy="18" r="15" stroke-dasharray="94.25" stroke-dashoffset="94.25"/></svg><span id="ai-ring-t">–</span></button>
@@ -1154,8 +1191,8 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   function fechaC(s){var p=String(s).split('-');return Number(p[2])+' de '+MESL[Number(p[1])-1].toLowerCase();}
   function usd(v){return 'US$'+Number(v||0).toFixed(4).replace('.',',');}
   function pintaUso(){if(!uso){return;}var a=uso.hoy/uso.limite_dia,b=uso.semana/uso.limite_semana;var f=Math.min(1,Math.max(a,b));var col=f>=0.95?'var(--red)':(f>=0.75?'var(--amber)':'var(--ok)');var fg=$('ai-ring-fg');fg.style.strokeDashoffset=String(94.25*(1-f));fg.style.stroke=col;$('ai-ring-t').textContent=Math.round(f*100)+'%';
-    var box=$('ai-use');box.textContent='';[['Hoy',uso.hoy,uso.limite_dia,'Se reinicia a la medianoche (queda libre el '+fechaC(uso.reinicia_dia)+')',uso.costo_hoy_usd],['Esta semana',uso.semana,uso.limite_semana,'Se reinicia el lunes '+fechaC(uso.reinicia_semana),uso.costo_semana_usd]].forEach(function(r){var w=el('div','ur');var l=el('div','ul');l.appendChild(el('span',null,r[0]));l.appendChild(el('span',null,Math.round(Math.min(1,r[1]/r[2])*100)+'% usado'));w.appendChild(l);var bar=el('div','ub');var i=document.createElement('i');var p=Math.min(1,r[1]/r[2]);i.style.width=(p*100).toFixed(0)+'%';i.style.background=p>=0.95?'var(--red)':(p>=0.75?'var(--amber)':'var(--ok)');bar.appendChild(i);w.appendChild(bar);w.appendChild(el('small',null,r[3]+' · costo estimado '+usd(r[4])));box.appendChild(w);});
-    var w3=el('div','ur');var l3=el('div','ul');l3.appendChild(el('span',null,'Este mes'));l3.appendChild(el('span',null,usd(uso.costo_mes_usd)));w3.appendChild(l3);w3.appendChild(el('small',null,'Costo estimado con la tarifa configurada; el valor exacto está en la consola de la API.'));box.appendChild(w3);}
+    var box=$('ai-use');box.textContent='';[['Hoy',uso.hoy,uso.limite_dia,function(){return 'Se restablece en '+dur(new Date(String(uso.reinicia_dia)+'T00:00:00-05:00').getTime()-Date.now()).replace(/ \d+ s$/,'');}],['Esta semana',uso.semana,uso.limite_semana,function(){return 'Se restablece el lunes '+fechaC(uso.reinicia_semana);}]].forEach(function(r){var w=el('div','ur');var l=el('div','ul');l.appendChild(el('b',null,r[0]));var sm=el('small',null,r[3]());sm.className='rs';sm.__f=r[3];l.appendChild(sm);w.appendChild(l);var p=Math.min(1,r[1]/r[2]);var bar=el('div','ub');var i=document.createElement('i');i.style.width=(p*100).toFixed(0)+'%';i.style.background=p>=0.95?'var(--red)':(p>=0.75?'var(--amber)':'var(--ok)');bar.appendChild(i);w.appendChild(bar);w.appendChild(el('span','up',Math.round(p*100)+'% usado'));box.appendChild(w);});}
+  setInterval(function(){var rs=document.querySelectorAll('#ai-use .rs');for(var k=0;k<rs.length;k++){if(rs[k].__f){rs[k].textContent=rs[k].__f();}}},30000);
   function traeUso(){return sb.rpc('app_ia_uso_resumen').then(function(r){if(!r.error&&r.data){uso=r.data;pintaUso();}return r;});}
   function textoUso(){if(!uso){return 'Todavía no puedo leer el consumo. Falta correr el archivo asistente_supabase.sql en Supabase.';}return 'Hoy llevas el '+Math.round(Math.min(1,uso.hoy/uso.limite_dia)*100)+'% de tu límite diario. Esta semana, el '+Math.round(Math.min(1,uso.semana/uso.limite_semana)*100)+'%; se reinicia el lunes '+fechaC(uso.reinicia_semana)+'.';}
   function paraVoz(t){return String(t).replace(/US\$\s?([\d.,]+)/g,'$1 dólares').replace(/\$\s?([\d.]+)(?:\s*\(COP\))?/g,function(m,n){return n.replace(/\./g,'')+' pesos';}).replace(/[«»*_#`]/g,'');}
@@ -1172,19 +1209,26 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   try{speechSynthesis.getVoices();speechSynthesis.addEventListener('voiceschanged',function(){});}catch(e){}
   function callar(){hId++;if(AU){try{AU.pause();}catch(e){}AU=null;}try{speechSynthesis.cancel();}catch(e){}botSt('idle');}
   function esConsumo(t){var n=normT(t).replace(/[¿?¡!.,]/g,'').trim();return n.length<60&&/^(consumo|uso|limite|limites|cuanto (llevo|he consumido|he gastado en (la )?(api|ia))|cuantas preguntas (llevo|me quedan))/.test(n)||/consumo de (la )?(api|ia|asistente)/.test(n);}
-  function motivo(d){var m=d&&d.motivo;if(m==='LIMITE_DIA'){return 'Llegaste al tope de hoy ('+d.uso.limite_dia+' preguntas). Vuelve a estar disponible el '+fechaC(d.uso.reinicia_dia)+'.';}if(m==='LIMITE_SEMANA'){return 'Llegaste al tope de la semana ('+d.uso.limite_semana+' preguntas). Se reinicia el lunes '+fechaC(d.uso.reinicia_semana)+'.';}if(m==='SIN_LLAVE'){return 'Pau todavía no tiene una IA conectada. Toca «Conexión IA», abajo a la derecha, y pega tu llave.';}if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}return 'No pude responder en este momento. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
+  function finDe(d){var u=(d&&d.uso)||{};var f=(d&&d.motivo==='LIMITE_SEMANA')?u.reinicia_semana:u.reinicia_dia;return new Date(String(f)+'T00:00:00-05:00').getTime();}
+  function dur(ms){if(ms<0){ms=0;}var s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),c=s%60,dd=Math.floor(h/24);if(dd>=1){return dd+' d '+(h%24)+' h '+m+' min';}return (h?h+' h ':'')+m+' min '+(c<10?'0':'')+c+' s';}
+  function durH(ms){if(ms<0){ms=0;}var m=Math.round(ms/60000),h=Math.floor(m/60),dd=Math.floor(h/24);if(dd>=1){return dd+(dd===1?' día':' días');}if(h>=1){return h+(h===1?' hora':' horas')+(m%60?' y '+(m%60)+' minutos':'');}return Math.max(1,m)+' minutos';}
+  var LIVE=null,liveT=0;
+  function cuenta(elm,fn){clearInterval(liveT);LIVE=fn;elm.textContent=fn();liveT=setInterval(function(){if(!document.body.contains(elm)){clearInterval(liveT);return;}elm.textContent=fn();},1000);}
+  function limTxt(d,vivo){var sem=d.motivo==='LIMITE_SEMANA';var u=d.uso;var nm=window.__nombre||'';var ms=finDe(d)-Date.now();return vivo?('Ya llegamos al tope '+(sem?'de la semana':'de hoy')+(nm?', '+nm:'')+' ('+(sem?u.limite_semana:u.limite_dia)+' preguntas). Nos vemos en un momento, vuelvo en '+dur(ms)+'.'):('Ya llegamos al tope '+(sem?'de la semana':'de hoy')+(nm?', '+nm:'')+'. Nos vemos en un momento, vuelvo en '+durH(ms)+'.');}
+  function motivo(d){var m=d&&d.motivo;if(m==='LIMITE_DIA'||m==='LIMITE_SEMANA'){return limTxt(d,false);}if(m==='SIN_LLAVE'){return 'Pau todavía no tiene una IA conectada. Toca «Conexión IA», abajo a la derecha, y pega tu llave.';}if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}return 'No pude responder en este momento. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
+  function addLim(d){var b=add('s','');cuenta(b,function(){return limTxt(d,true);});}
   /* La función puede llamarse «asistente» o «quick-processor» (nombre que le puso Supabase) */
   var FN=['quick-processor','asistente'];var fnOk=null;
   function invocar(body){body.nombre=window.__nombre||'';if(fnOk){return sb.functions.invoke(fnOk,{body:body});}return sb.functions.invoke(FN[0],{body:body}).then(function(r){if(!r.error&&r.data){fnOk=FN[0];return r;}return sb.functions.invoke(FN[1],{body:body}).then(function(r2){if(!r2.error&&r2.data){fnOk=FN[1];}return r2;});});}
   /* Envía la pregunta; devuelve una promesa con el texto que se mostró */
   function preguntar(t){t=String(t||'').trim();if(!t||enviando){return Promise.resolve('');}var hr=M.querySelector('.ai-hero');if(hr){hr.remove();}add('u',t);
     if(esConsumo(t)){return traeUso().then(function(){var s=textoUso();add('a',s);$('ai-use').classList.add('on');return s;});}
-    if(uso&&(uso.hoy>=uso.limite_dia||uso.semana>=uso.limite_semana)){var s0=motivo({motivo:uso.hoy>=uso.limite_dia?'LIMITE_DIA':'LIMITE_SEMANA',uso:uso});add('s',s0);return Promise.resolve(s0);}
-    enviando=true;botSt('pensando');var w=add('a','');var dd=el('span','dots');dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));w.appendChild(dd);
+    if(uso&&(uso.hoy>=uso.limite_dia||uso.semana>=uso.limite_semana)){var d0={motivo:uso.hoy>=uso.limite_dia?'LIMITE_DIA':'LIMITE_SEMANA',uso:uso};var s0=motivo(d0);addLim(d0);return Promise.resolve(s0);}
+    enviando=true;botSt('pensando');var w=add('a','');w.appendChild(el('span',null,'Estoy consultando tus facturas '));var dd=el('span','dots');dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));w.appendChild(dd);
     return invocar({pregunta:t,historial:hist.slice(-6),modo:(vOn?'voz':'texto')}).then(function(r){enviando=false;botSt('idle');var d=r.data;
-      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v3.3, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
+      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v3.4, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
       if(d.uso){uso=d.uso;pintaUso();}
-      if(!d.ok){w.remove();var s2=motivo(d);add('s',s2);return s2;}
+      if(!d.ok){w.remove();var s2=motivo(d);if(d.motivo==='LIMITE_DIA'||d.motivo==='LIMITE_SEMANA'){addLim(d);}else{add('s',s2);}return s2;}
       w.textContent=d.respuesta;M.scrollTop=M.scrollHeight;hist.push({role:'user',content:t});hist.push({role:'assistant',content:d.respuesta});
       if(uso){var q=Math.min(uso.limite_dia-uso.hoy,uso.limite_semana-uso.semana);if(q<=3&&q>0){add('s','Te quedan '+q+' pregunta'+(q===1?'':'s')+' antes del tope.');}}
       return d.respuesta;
@@ -1224,7 +1268,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     r.onend=function(){if(bg===r&&vOn&&!vMute&&V.getAttribute('data-st')==='hablando'){try{r.start();}catch(e){}}};r.onerror=function(){};try{r.start();}catch(e){}}
   function vMuteUi(){var b=$('v-mute');b.classList.toggle('on',vMute);b.setAttribute('aria-pressed',vMute?'true':'false');}
   function vHabla(s,gr){est('hablando','Pau');hablar(s,function(){bargeOff();if(vOn&&!vMute){setTimeout(vEscucha,gr?200:350);}else if(vOn&&vMute){est('pausa','Micrófono en silencio');}});bargeOn(s);}
-  function vProcesa(f,tx){tx.textContent=f;est('pensando','Consultando tus facturas');preguntar(f).then(function(s){if(!vOn){return;}tx.className='v-tx';tx.textContent=s;vHabla(s,false);});}
+  function vProcesa(f,tx){tx.textContent=f;est('pensando','Estoy consultando tus facturas…');preguntar(f).then(function(s){if(!vOn){return;}tx.className='v-tx';tx.textContent=s;if(LIVE&&/tope/.test(s)){var lf=LIVE;cuenta(tx,function(){return vOn?lf():'';});}else{clearInterval(liveT);LIVE=null;}vHabla(s,false);});}
   function vEscucha(seed){if(!vOn||vMute){return;}seed=(typeof seed==='string')?seed.trim():'';$('v-tap').classList.add('hide');callar();bargeOff();est('escuchando','Te escucho');var tx=$('v-tx');tx.className='v-tx me';tx.textContent=seed;
     oir(function(p){tx.textContent=(seed?seed+' ':'')+p;},function(f){if(!vOn){return;}vProcesa((seed?seed+' ':'')+f,tx);},
       function(why){if(!vOn){return;}if(why==='nosr'){est('pausa','Sin dictado');tx.className='v-tx';tx.textContent='Este navegador no permite dictar por voz. Ábrelo en Chrome, o escribe tu pregunta en el chat.';return;}if(why==='not-allowed'||why==='service-not-allowed'){est('pausa','Micrófono bloqueado');tx.className='v-tx';tx.textContent='Dale permiso al micrófono en el candado de la barra de direcciones y vuelve a entrar.';return;}if(seed&&seed.split(/\s+/).length>=2){vProcesa(seed,tx);return;}est('pausa','En pausa');tx.textContent='No te escuché.';$('v-tap').classList.remove('hide');});}
@@ -1375,12 +1419,19 @@ try{if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEve
   var SOLO_ITEM={'PRECIOS':1,'CONSUMO':1,'TENDENCIA':1,'AHORRO':1,'COMPRAS':1};
   var SEVB={'CRITICO':30,'ATENCION':20,'INFO':8,'BIEN':0};
   function tag(c){var e=c.querySelector('.tag');return e?String(e.textContent).trim().toUpperCase():'';}
+  function corto(t){t=String(t).replace(/\s+/g,' ').trim();var m;
+    if((m=/^Consumo frente a (.+?) \([^)]*\):\s*(.*)$/.exec(t))){t='Comparado con '+m[1]+': '+m[2];}
+    else if((m=/^Consumo de (.+?) frente al promedio mensual del año \([^)]*\):\s*(.*)$/.exec(t))){t='En '+m[1]+' frente a tu promedio: '+m[2];}
+    var p=t.split(/\.\s+(?=[A-ZÁÉÍÓÚ«])/)[0].split(';')[0].trim();
+    if(p.length>120){p=p.slice(0,117).replace(/\s+\S*$/,'')+'…';}else if(p.length<t.length-2&&!/[.…]$/.test(p)){p+='…';}
+    return p;}
   function filtra(){var c=cur();var porItem=!!(c&&c.productos);
     [['col-adv','n-adv'],['col-sug','n-sug'],['col-acc','n-acc']].forEach(function(p){var col=document.getElementById(p[0]);if(!col){return;}
       var cards=[].slice.call(col.children).filter(function(x){return x.classList&&x.classList.contains('ic');});
       var ok=cards.filter(function(x){var tg=tag(x);if(/es parcial y no es comparable/.test(x.textContent)){return false;}if(porItem&&!SOLO_ITEM[tg]){return false;}return true;});
+      ok.forEach(function(x){var f=x.querySelector('.fnd');if(f&&!f.__c){f.__c=1;f.textContent=corto(f.textContent);}var mu=x.querySelector('.tag.mut');if(mu){mu.remove();}});
       ok.forEach(function(x,i){x.__s=(RELEV[tag(x)]||40)+(SEVB[x.getAttribute('data-sev')]||0)-i*0.01;});
-      ok.sort(function(a,b){return b.__s-a.__s;});ok=ok.slice(0,5);
+      ok=ok.filter(function(x){return x.__s>=55;});ok.sort(function(a,b){return b.__s-a.__s;});var cnt={};ok=ok.filter(function(x){var g=tag(x);cnt[g]=(cnt[g]||0)+1;return cnt[g]<=2;});ok=ok.slice(0,5);
       col.textContent='';ok.forEach(function(x){col.appendChild(x);});
       if(!ok.length&&porItem){var n=document.createElement('div');n.className='fnd';n.style.cssText='opacity:.7;padding:6px 2px';n.textContent='Sin hallazgos relevantes para este ítem.';col.appendChild(n);}
       var nb=document.getElementById(p[1]);if(nb){nb.textContent=String(ok.length);}
@@ -1408,9 +1459,11 @@ try{if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEve
       var sel=document.createElement('select');var o0=document.createElement('option');o0.value='';o0.textContent='Subcategoría…';sel.appendChild(o0);sel.disabled=true;
       sc.addEventListener('change',function(){sel.textContent='';var q0=document.createElement('option');q0.value='';q0.textContent='Subcategoría…';sel.appendChild(q0);cl.subcats.filter(function(s){return s.categoria===sc.value;}).forEach(function(s){var op=document.createElement('option');op.value=s.id;op.textContent=s.nombre;sel.appendChild(op);});sel.disabled=!sc.value;});
       var pr2=document.createElement('div');pr2.className='clsel';pr2.appendChild(sc);pr2.appendChild(sel);row.appendChild(pr2);
-            var bt=el('button','btn pri','Guardar');bt.type='button';bt.addEventListener('click',function(){if(!sel.value){msg('Elige categoría y subcategoría para «'+(x.descripcion||'')+'».','err');return;}bt.disabled=true;msg('');
+            var bt=el('button','btn pri','Guardar');bt.type='button';var al=el('div','clerr','No se puede guardar: elige primero la categoría y la subcategoría.');row.appendChild(al);
+      function limpia(){row.classList.remove('bad');}sc.addEventListener('change',limpia);sel.addEventListener('change',limpia);
+      bt.addEventListener('click',function(){if(!sc.value||!sel.value){row.classList.remove('bad');void row.offsetWidth;row.classList.add('bad');(!sc.value?sc:sel).focus();try{navigator.vibrate&&navigator.vibrate(120);}catch(e){}msg('No se puede guardar «'+(x.descripcion||'')+'»: falta la categoría o la subcategoría.','err');return;}bt.disabled=true;msg('');
         sb.rpc('app_clasificar',{p_producto:x.id,p_subcat:Number(sel.value),p_nombre:null}).then(function(r){bt.disabled=false;if(r.error||!r.data||!r.data.ok){msg(r.error?r.error.message:'No se pudo guardar.','err');return;}cl.items=cl.items.filter(function(y){return y.id!==x.id;});barra();pinta();msg('Guardado en Supabase. El tablero se está actualizando.','ok');cl.__dirty=true;clearTimeout(cl.__t);cl.__t=setTimeout(function(){cl.__dirty=false;try{load(false);}catch(e){}},1200);});});
-      row.appendChild(bt);L.appendChild(row);});
+      row.insertBefore(bt,al);L.appendChild(row);});
     if(rows.length>lim){var mb=el('button','btn','Ver más ('+(rows.length-lim)+' restantes)');mb.type='button';mb.addEventListener('click',function(){cl.__lim=lim+40;pinta();});L.appendChild(mb);}
     $('cl-q').parentNode.style.display=cl.items.length>15?'':'none';}
   $('cl-q').addEventListener('input',pinta);
@@ -1429,6 +1482,13 @@ function play(){fin();void sp.offsetWidth;sp.classList.remove('gone','out','fade
 sp.addEventListener('click',function(){sp.classList.add('out');T.forEach(clearTimeout);T=[setTimeout(function(){sp.classList.add('fade');},350),setTimeout(fin,850)];});
 window.__intro=play;play();})();
 document.getElementById('a-intro').addEventListener('click',function(){if(window.__intro)window.__intro();});
+
+(function(){var f=document.getElementById('ai-fab');if(!f)return;var sx,sy,ox,oy,mv=false,dn=false;
+try{var sv=JSON.parse(localStorage.getItem('fc-fab')||'null');if(sv&&sv.l>=0&&sv.t>=0&&sv.l<innerWidth-40&&sv.t<innerHeight-40){f.style.left=sv.l+'px';f.style.top=sv.t+'px';f.style.right='auto';f.style.bottom='auto';}}catch(e){}
+f.addEventListener('pointerdown',function(e){dn=true;mv=false;sx=e.clientX;sy=e.clientY;var r=f.getBoundingClientRect();ox=r.left;oy=r.top;try{f.setPointerCapture(e.pointerId);}catch(x){}});
+f.addEventListener('pointermove',function(e){if(!dn)return;var dx=e.clientX-sx,dy=e.clientY-sy;if(!mv&&Math.abs(dx)+Math.abs(dy)<8)return;mv=true;var l=Math.max(4,Math.min(innerWidth-f.offsetWidth-4,ox+dx)),t=Math.max(4,Math.min(innerHeight-f.offsetHeight-4,oy+dy));f.style.left=l+'px';f.style.top=t+'px';f.style.right='auto';f.style.bottom='auto';});
+f.addEventListener('pointerup',function(){dn=false;if(mv){try{localStorage.setItem('fc-fab',JSON.stringify({l:parseFloat(f.style.left),t:parseFloat(f.style.top)}));}catch(e){}}});
+f.addEventListener('click',function(e){if(mv){e.stopImmediatePropagation();e.preventDefault();mv=false;}},true);})();
 </script>
 </body>
 </html>
