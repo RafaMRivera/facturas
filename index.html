@@ -1064,7 +1064,7 @@ function parDet(l1,v1,l2,v2,fmt,col){var W=320,H=130,PT=22,PB=22;var mx=Math.max
 function panel(nom,graf,analisis,fn){var p=el('div','gp');var h=el('div','gph');h.appendChild(el('div','grn',nom));if(fn){var b=el('button','gpb','Filtrar →');b.addEventListener('click',function(){gClose();fn();});h.appendChild(b);}p.appendChild(h);
   graf.forEach(function(g){if(g[0]){p.appendChild(el('div','gpl',g[0]));}p.appendChild(g[1]);});p.appendChild(el('div','gpa',analisis));return p;}
 var GD=null;function gClose(){if(GD){GD.style.display='none';document.body.style.overflow='';}}
-function gOpen(titulo,sub,paneles){if(!GD){GD=el('div','ovl');GD.id='gdov';GD.innerHTML='<div class="mdl"><div class="mh"><div><h3 id="gd-t"></h3><div class="sub2" id="gd-s"></div></div><button class="mx" id="gd-x" aria-label="Cerrar">✕</button></div><div class="mb" id="gd-b"></div></div>';document.body.appendChild(GD);GD.addEventListener('click',function(e){if(e.target===GD){gClose();}});document.getElementById('gd-x').addEventListener('click',gClose);}
+function gOpen(titulo,sub,paneles){if(!GD){GD=el('div','ovl');GD.id='gdov';GD.innerHTML='<div class="mdl"><div class="mh"><div><h3 id="gd-t"></h3><div class="sub2" id="gd-s"></div></div><button class="mx" id="gd-x" aria-label="Cerrar">✕</button></div><div class="mb" id="gd-b"></div></div>';document.body.appendChild(GD);if(window.__bkObs){window.__bkObs(GD);}GD.addEventListener('click',function(e){if(e.target===GD){gClose();}});document.getElementById('gd-x').addEventListener('click',gClose);}
   document.getElementById('gd-t').textContent=titulo;document.getElementById('gd-s').textContent=sub||'';var b=document.getElementById('gd-b');b.textContent='';paneles.forEach(function(p){b.appendChild(p);});GD.style.display='flex';GD.scrollTop=0;document.body.style.overflow='hidden';}
 /* tarjeta: comentario corto + Ver detalle (ventana con gráficos y análisis) */
 function gcard(sev,cat,comentario,tituloVentana,subVentana,build){var c=el('div','ic g');c.setAttribute('data-sev',sev);var top=el('div','ict');top.appendChild(el('span','pill sv-'+sev,SEV[sev].l));top.appendChild(el('span','tag',cat));c.appendChild(top);c.appendChild(sentence(comentario));var b=el('button','fu','Ver detalle →');b.addEventListener('click',function(){gOpen(tituloVentana,subVentana,build());});c.appendChild(b);return c;}
@@ -1312,7 +1312,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     if(uso&&(uso.hoy>=uso.limite_dia||uso.semana>=uso.limite_semana)){var d0={motivo:uso.hoy>=uso.limite_dia?'LIMITE_DIA':'LIMITE_SEMANA',uso:uso};var s0=motivo(d0);addLim(d0);return Promise.resolve(s0);}
     enviando=true;botSt('pensando');var w=add('a','');w.appendChild(el('span',null,'Estoy consultando tus facturas '));var dd=el('span','dots');dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));w.appendChild(dd);
     return invocar({pregunta:t,historial:hist.slice(-6),modo:(vOn?'voz':'texto')}).then(function(r){enviando=false;botSt('idle');var d=r.data;
-      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v3.8, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
+      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v3.9, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
       if(d.uso){uso=d.uso;pintaUso();}
       if(!d.ok){w.remove();var s2=motivo(d);if(d.motivo==='LIMITE_DIA'||d.motivo==='LIMITE_SEMANA'){addLim(d);}else{add('s',s2);}return s2;}
       w.textContent=d.respuesta;M.scrollTop=M.scrollHeight;hist.push({role:'user',content:t});hist.push({role:'assistant',content:d.respuesta});
@@ -1490,14 +1490,25 @@ try{if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEve
   };
 })();
 
-/* Botón «atrás» del celular: cierra la capa abierta (voz, historial de precio, detalle, ajustes, Pau) */
-(function(){var pushed=0,ign=false;
-  function capas(){var l=[];var V=document.getElementById('ai-voice'),P=document.getElementById('povl'),O=document.getElementById('ovl'),A=document.getElementById('ai-panel');
-    if(A&&A.classList.contains('on')){l.push('ai-x');}if(A&&A.classList.contains('on')&&A.classList.contains('cfg')){l.push('cf-x');}if(O&&O.style.display==='flex'){l.push('mclose');}var C0=document.getElementById('clovl');if(C0&&C0.style.display==='flex'){l.push('cl-x');}if(P&&P.style.display==='flex'){l.push('pclose');}if(V&&V.classList.contains('on')){l.push('v-x');}return l;}
-  function ordenar(){var A=document.getElementById('ai-panel'),V=document.getElementById('ai-voice'),P=document.getElementById('povl'),O=document.getElementById('ovl');var l=[];if(V&&V.classList.contains('on')){l.push('v-x');}else if(document.getElementById('clovl')&&document.getElementById('clovl').style.display==='flex'){l.push('cl-x');}else if(P&&P.style.display==='flex'){l.push('pclose');}else if(O&&O.style.display==='flex'){l.push('mclose');}else if(A&&A.classList.contains('on')){l.push(A.classList.contains('cfg')?'cf-x':'ai-x');}return l[0]||'';}
+/* Botón «atrás» del celular: cierra la capa abierta; si no hay capas, vuelve a la sección anterior, quita filtros o sube al inicio */
+(function(){var pushed=0,ign=false,tabs=[],navIgn=false;try{history.scrollRestoration='manual';}catch(e){}
+  function open(i,m){var e=document.getElementById(i);return !!e&&(m==='c'?e.classList.contains('on'):e.style.display==='flex');}
+  function capas(){var l=[];var A=document.getElementById('ai-panel');if(open('ai-panel','c')){l.push('ai-x');}if(open('ai-panel','c')&&A.classList.contains('cfg')){l.push('cf-x');}if(open('ovl')){l.push('mclose');}if(open('clovl')){l.push('cl-x');}if(open('povl')){l.push('pclose');}if(open('gdov')){l.push('gd-x');}if(open('ai-voice','c')){l.push('v-x');}return l;}
+  function ordenar(){var A=document.getElementById('ai-panel');if(open('ai-voice','c')){return 'v-x';}if(open('gdov')){return 'gd-x';}if(open('clovl')){return 'cl-x';}if(open('povl')){return 'pclose';}if(open('ovl')){return 'mclose';}if(open('ai-panel','c')){return A.classList.contains('cfg')?'cf-x':'ai-x';}return '';}
   function sync(){var n=capas().length;while(pushed<n){try{history.pushState({af:1},'');}catch(e){}pushed++;}if(pushed>n){var d=pushed-n;pushed=n;ign=true;try{history.go(-d);}catch(e){ign=false;}}}
-  window.addEventListener('popstate',function(){if(ign){ign=false;return;}var id=ordenar();if(id){pushed=Math.max(0,pushed-1);var b=document.getElementById(id);if(b){b.click();}}else{pushed=0;}});
-  var mo=new MutationObserver(sync);['ai-panel','ai-voice','povl','ovl','clovl'].forEach(function(i){var e=document.getElementById(i);if(e){mo.observe(e,{attributes:true,attributeFilter:['class','style']});}});})();
+  function centinela(){try{history.pushState({af:'raiz'},'');}catch(e){}}
+  function filtrosActivos(){try{var c=cur();return !!(c&&(c.mes||c.proveedor||c.categoria||c.subcategoria||c.productos));}catch(e){return false;}}
+  function actual(){var b=document.querySelector('#mnav button.on');return b?b.getAttribute('data-t'):'sec1';}
+  function atras(){
+    if(tabs.length){var t=tabs.pop();var bt=document.querySelector('#mnav button[data-t="'+t+'"]');if(bt){navIgn=true;bt.click();navIgn=false;}centinela();return;}
+    if(filtrosActivos()){try{dash.resetParams();}catch(e){}centinela();return;}
+    if(actual()!=='sec1'||(window.pageYOffset||0)>120){var b1=document.querySelector('#mnav button[data-t="sec1"]');if(b1){navIgn=true;b1.click();navIgn=false;}window.scrollTo({top:0,behavior:'smooth'});centinela();return;}
+    /* ya está en el inicio sin nada abierto: la siguiente pulsación sale de la app */}
+  window.addEventListener('popstate',function(){if(ign){ign=false;return;}var id=ordenar();if(id){pushed=Math.max(0,pushed-1);var b=document.getElementById(id);if(b){b.click();}return;}pushed=0;if(!document.getElementById('fe').classList.contains('hide')){atras();}});
+  document.getElementById('mnav').addEventListener('click',function(ev){if(navIgn){return;}var b=ev.target.closest?ev.target.closest('button[data-t]'):null;if(!b){return;}var prev=actual();if(prev!==b.getAttribute('data-t')){tabs.push(prev);if(tabs.length>12){tabs.shift();}}},true);
+  var mo=new MutationObserver(sync);['ai-panel','ai-voice','povl','ovl','clovl','gdov'].forEach(function(i){var e=document.getElementById(i);if(e){mo.observe(e,{attributes:true,attributeFilter:['class','style']});}});
+  window.__bkObs=function(e){mo.observe(e,{attributes:true,attributeFilter:['class','style']});};
+  centinela();})();
 
 /* Bloqueo por inactividad: sin tocar la app por LOCK_SEG segundos, cierra la sesión y pide acceso de nuevo */
 (function(){var LOCK_SEG=30,last=Date.now();
