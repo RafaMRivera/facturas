@@ -1,7 +1,7 @@
 {
-  "name": "Mis Facturas Inteligentes · Arquitecto Financiero",
-  "short_name": "Facturas AF",
-  "description": "Tus facturas electrónicas DIAN con el asistente Simi.",
+  "name": "FinCash",
+  "short_name": "FinCash",
+  "description": "Tus facturas electrónicas DIAN con el asistente Pau.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
