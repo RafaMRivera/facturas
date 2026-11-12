@@ -1,6 +1,6 @@
 {
-  "name": "FinCash",
-  "short_name": "FinCash",
+  "name": "Gestor Factura Electrónica",
+  "short_name": "Gestor Factura",
   "description": "Tus facturas electrónicas DIAN con el asistente Pau.",
   "start_url": "./",
   "scope": "./",
