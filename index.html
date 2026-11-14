@@ -1079,7 +1079,7 @@ button:active{transform:scale(.97)}
   <div class="v-st" id="v-st">Te escucho</div>
   <div class="v-tx" id="v-tx"></div>
   <div class="v-think" id="v-think"><span class="vt-t"></span><span class="dots"><i></i><i></i><i></i></span></div><div class="v-trz" id="v-trz"></div>
-  <button class="v-tap hide" id="v-tap">Tocar para hablar</button>
+  <button class="v-tap hide" id="v-tap">Tocar para hablar</button><button class="v-tap hide" id="v-send" type="button">Listo, responde</button>
   <canvas id="v-wave"></canvas>
 </div>
 </div>
@@ -1529,7 +1529,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     if(/^(hola|holi|buenas|buenos dias|buen dia|buenas tardes|buenas noches|hey|que mas|quiubo)( pau)?$/.test(s)){return 'Hola'+n+'. ¿Qué quieres revisar hoy?';}
     return '';
   }
-  var PM_VER='v4';var PM_ESPERA=60000; /* si la lectura tarda más de esto, Pau avisa en vez de quedarse pensando */
+  var PM_VER='v5';var PM_ESPERA=60000; /* si la lectura tarda más de esto, Pau avisa en vez de quedarse pensando */
   function pmTiempo(p){return new Promise(function(ok,ko){var t=setTimeout(function(){ko(new Error('La lectura tardó demasiado ('+PM_VER+(window.__pmKb?', envié '+window.__pmKb+' KB':'')+'). Revisa tu señal e intenta de nuevo con la foto más cerca del producto.'));},PM_ESPERA);p.then(function(v){clearTimeout(t);ok(v);},function(e){clearTimeout(t);ko(e);});});}
   function pmCard(){var d=el('div','msg a pm-card');M.appendChild(d);M.scrollTop=M.scrollHeight;return d;}
   function pmMotivo(d){var m=d&&d.motivo;if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}if(d&&d.detalle&&(m==='SIN_LLAVE'||m==='FORMATO'||m==='TAMANO')){return d.detalle;}return 'No pude leer la promoción. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
@@ -1681,7 +1681,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   })();
   /* Modo voz: bordes verdes y ondas */
   var V=$('ai-voice');var cvs=$('v-wave');var ctx=cvs.getContext('2d');var raf=0;var t0=0;
-  function est(s,txt){if(s!=='pensando'&&thStop){thStop();thStop=null;}V.setAttribute('data-st',s);$('v-st').textContent=txt;ampT=s==='hablando'?1:(s==='escuchando'?0.14:(s==='pensando'?0.22:0.05));}
+  function est(s,txt){if(s!=='pensando'&&thStop){thStop();thStop=null;}V.setAttribute('data-st',s);var vs=$('v-send');if(vs&&s!=='escuchando'){vs.classList.add('hide');}$('v-st').textContent=txt;ampT=s==='hablando'?1:(s==='escuchando'?0.14:(s==='pensando'?0.22:0.05));}
   function onda(ts){if(!vOn){return;}if(!t0){t0=ts;}var t=(ts-t0)/1000;var dpr=window.devicePixelRatio||1;var w=cvs.clientWidth,h=cvs.clientHeight;if(cvs.width!==Math.round(w*dpr)){cvs.width=Math.round(w*dpr);cvs.height=Math.round(h*dpr);}ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);amp+=(ampT-amp)*0.04;if(V.getAttribute('data-st')==='escuchando'&&ampT>0.14){ampT-=0.008;}
     var puls=V.getAttribute('data-st')==='hablando'?(0.72+0.28*Math.sin(t*5.3)*Math.sin(t*1.9+1)):1;var A=amp*puls;
     [[0.8,0.9,0.10,'74,222,128'],[1.2,0.65,0.08,'34,197,94'],[1.7,1.15,0.06,'157,198,175'],[2.3,0.5,0.05,'74,222,128']].forEach(function(L,k){ctx.beginPath();var base=h*(0.72+k*0.05)-A*h*0.16;ctx.moveTo(0,h);for(var x=0;x<=w;x+=6){var y=base-Math.sin(x/w*Math.PI*2*L[0]+t*L[1]+k*1.3)*h*0.20*A*(0.65+0.35*Math.sin(t*0.6+k))-Math.sin(x/w*Math.PI*6+t*1.4+k*2)*h*0.035*A-Math.sin(x/w*Math.PI*1.2-t*0.4+k)*6;ctx.lineTo(x,y);}ctx.lineTo(w,h);ctx.closePath();var g=ctx.createLinearGradient(0,base-h*0.3,0,h);g.addColorStop(0,'rgba('+L[3]+','+(L[2]+A*0.14)+')');g.addColorStop(1,'rgba('+L[3]+',0.02)');ctx.fillStyle=g;ctx.fill();ctx.beginPath();for(var x2=0;x2<=w;x2+=6){var y2=base-Math.sin(x2/w*Math.PI*2*L[0]+t*L[1]+k*1.3)*h*0.20*A*(0.65+0.35*Math.sin(t*0.6+k))-Math.sin(x2/w*Math.PI*6+t*1.4+k*2)*h*0.035*A-Math.sin(x2/w*Math.PI*1.2-t*0.4+k)*6;if(x2===0){ctx.moveTo(x2,y2);}else{ctx.lineTo(x2,y2);}}ctx.strokeStyle='rgba('+L[3]+','+(0.10+A*0.22)+')';ctx.lineWidth=1.2;ctx.stroke();});
@@ -1714,9 +1714,38 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   function pedirMic(){if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){return Promise.resolve('ok');}return navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){s.getTracks().forEach(function(k){k.stop();});return 'ok';},function(e){return (e&&/NotAllowed|Permission|Security/i.test(String(e.name)+String(e.message)))?'denegado':'error';});}
   function sinMic(){vNeedMic=true;est('pausa','Falta permiso del micrófono');var tx=$('v-tx');tx.className='v-tx';tx.textContent='Chrome tiene bloqueado el micrófono para esta página. Toca ⋮ (arriba a la derecha) → Configuración → Configuración de sitios → Micrófono → rafamrivera.github.io → Permitir. Luego toca el botón de abajo.';var b=$('v-tap');b.textContent='Dar permiso al micrófono';b.classList.remove('hide');}
   function palabras(f){return String(f).toLowerCase().replace(/[^a-záéíóúñü\s]/g,' ').split(/\s+/).filter(function(w){return w.length>=2&&!/^(e+h*|m+|a+h*|u+h*|h+m+|eh+m*|mm+h*)$/.test(w);});}
+  /* Modo voz: escucha con pausas largas. Una pausa NO corta la frase: Pau espera PAUSA_VOZ_SEG segundos de silencio antes de responder.
+     Para responder ya: toca «Listo, responde» o termina diciendo «listo Pau», «eso es todo» o «responde». */
+  var PAUSA_VOZ_SEG=15,SIN_HABLA_SEG=8,vPausa=null;
+  var FIN_VOZ=/\s+(listo,? pau|eso es todo|ya termin[eé]|responde(,? pau)?|resp[oó]ndeme|env[ií]alo)\s*[.!]?\s*$/i;
+  function vEnviaMuestra(on){var b=$('v-send');if(b){b.classList.toggle('hide',!on);}}
+  function oirPausa(onParcial,onFinal,onFin){
+    if(!SR){onFin('nosr');return null;}
+    pararRec();
+    var S={acum:'',cur:'',fin:false,n:0,tm:0,tf:0,r:null};vPausa=S;
+    function todo(){return (S.acum+' '+S.cur).replace(/\s+/g,' ').trim();}
+    function limpia(){clearTimeout(S.tm);clearTimeout(S.tf);if(vPausa===S){vPausa=null;}vEnviaMuestra(false);}
+    S.cierra=function(){
+      if(S.fin){return;}S.fin=true;limpia();var r=S.r;rec=null;
+      if(r){try{r.onend=null;r.onresult=null;r.onerror=null;r.abort();}catch(e){}}
+      botSt('idle');var t=todo().replace(FIN_VOZ,'').trim();if(t){onFinal(t);}else{onFin('vacio');}
+    };
+    function arma(){clearTimeout(S.tm);S.tm=setTimeout(function(){if(S.fin||rec!==S.r){return;}S.cierra();},(todo()?PAUSA_VOZ_SEG:SIN_HABLA_SEG)*1000);}
+    function lanza(){
+      var r=new SR();S.r=r;rec=r;r.lang='es-CO';r.interimResults=true;r.continuous=true;r.maxAlternatives=1;
+      r.onresult=function(e){ampT=0.55;var fi='',pa='';for(var i=0;i<e.results.length;i++){if(e.results[i].isFinal){fi+=e.results[i][0].transcript;}else{pa+=e.results[i][0].transcript;}}
+        S.cur=(fi+' '+pa).trim();var t=todo();onParcial(t);vEnviaMuestra(!!t);arma();
+        clearTimeout(S.tf);if(FIN_VOZ.test(t)){S.tf=setTimeout(function(){if(!S.fin&&rec===S.r){S.cierra();}},900);}};
+      r.onerror=function(e){if(S.fin){return;}if(e.error==='no-speech'||e.error==='aborted'){return;}S.fin=true;limpia();rec=null;botSt('idle');onFin(e.error||'error');};
+      r.onend=function(){if(S.fin){return;}S.acum=(S.acum+' '+S.cur).trim();S.cur='';if(++S.n<80){try{lanza();}catch(x){S.cierra();}}else{S.cierra();}};
+      try{r.start();}catch(x){S.fin=true;limpia();rec=null;onFin('error');}
+    }
+    botSt('escuchando');lanza();arma();return S;
+  }
+  (function(){var b=$('v-send');if(b){b.addEventListener('click',function(ev){ev.stopPropagation();if(vPausa){vPausa.cierra();}});}})();
   function vEscucha(seed){if(!vOn||vMute){return;}seed=(typeof seed==='string')?seed.trim():'';if(seed){vReint=0;}$('v-tap').classList.add('hide');callar();bargeOff();piensa(false);est('escuchando','Te escucho');var tx=$('v-tx');tx.className='v-tx me';tx.textContent=seed;
     function otra(){if(vReint<4){vReint++;setTimeout(function(){if(vOn&&!vMute&&V.getAttribute('data-st')!=='hablando'&&V.getAttribute('data-st')!=='pensando'){vEscucha();}},250);return true;}return false;}
-    oir(function(p){if(vMute){return;}tx.textContent=(seed?seed+' ':'')+p;},function(f){if(!vOn||vMute){return;}var tot=(seed?seed+' ':'')+f;if(!palabras(tot).length||(Date.now()-lastTouch<1000&&palabras(tot).length<2)){if(!otra()){est('pausa','En pausa');tx.textContent='No te escuché.';$('v-tap').classList.remove('hide');}return;}vReint=0;vProcesa(tot,tx);},
+    oirPausa(function(p){if(vMute){return;}tx.textContent=(seed?seed+' ':'')+p;},function(f){if(!vOn||vMute){return;}var tot=(seed?seed+' ':'')+f;if(!palabras(tot).length||(Date.now()-lastTouch<1000&&palabras(tot).length<2)){if(!otra()){est('pausa','En pausa');tx.textContent='No te escuché.';$('v-tap').classList.remove('hide');}return;}vReint=0;vProcesa(tot,tx);},
       function(why){if(!vOn||vMute){return;}if(why==='nosr'){est('pausa','Sin dictado');tx.className='v-tx';tx.textContent='Este navegador no permite dictar por voz. Ábrelo en Chrome, o escribe tu pregunta en el chat.';return;}if(why==='not-allowed'||why==='service-not-allowed'){pedirMic().then(function(r){if(r==='ok'){vEscucha();}else{sinMic();}});return;}if(seed&&palabras(seed).length){vReint=0;vProcesa(seed,tx);return;}if(why==='aborted'){return;}if(otra()){return;}est('pausa','En pausa');tx.textContent='No te escuché.';$('v-tap').classList.remove('hide');});}
   var SALS=['Hola{N}, soy Pau, tu asistente financiera. ¿Qué deseas analizar hoy?','Hola{N}, soy Pau. ¿Qué quieres descubrir hoy?','Hola{N}, ¿qué quieres revisar hoy?','{N2}qué bueno tenerte aquí. Soy Pau, ¿qué analizamos hoy?','Hola{N}, aquí Pau, lista para ayudarte. ¿Qué miramos de tus facturas hoy?'];var ultS=-1;
   function saludo(nm){var i;do{i=Math.floor(Math.random()*SALS.length);}while(i===ultS&&SALS.length>1);ultS=i;return SALS[i].replace('{N}',nm?', '+nm:'').replace('{N2}',nm?nm+', ':'').replace(/^q/,'Q');}
@@ -1753,7 +1782,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   $('vz-save').addEventListener('click',function(){vzMsg('');
     if(!vzP){sb.rpc('app_voz_quitar').then(function(r){if(r.error){vzMsg(/app_voz|function|schema cache/i.test(r.error.message)?'Falta instalar SIMI_voz.sql en Supabase.':r.error.message,false);return;}VZ.on=false;vzSaved='';vzMsg('Listo: Pau usará la voz del dispositivo.',true);});return;}
     sb.rpc('app_voz_guardar',{p_proveedor:vzP,p_llave:$('vz-key').value.trim(),p_voz:$('vz-voz').value.trim()}).then(function(r){if(r.error){vzMsg(/FALTA_LLAVE/.test(r.error.message)?'Pega la llave de la voz.':(/app_voz|function|schema cache/i.test(r.error.message)?'Falta instalar SIMI_voz.sql en Supabase.':r.error.message),false);return;}$('vz-key').value='';vzSaved=vzP;VZ.on=true;vzPinta();vzMsg('Voz guardada. Toca «Probar voz».',true);});});
-  $('vz-test').addEventListener('click',function(){vzMsg('Probando…',true);callar();var nm=window.__nombre||'';invocar({tts:'Hola'+(nm?', '+nm:'')+'. Así sueno. Soy Pau, tu asistente financiera. ¿Qué deseas analizar hoy?'}).then(function(r){var d=r&&r.data;if(!d||!d.ok||!d.audio){vzMsg(d&&d.detalle?String(d.detalle).slice(0,200):'No pude generar la voz. Revisa la llave, el nombre de la voz y que hayas actualizado la función de Supabase.',false);return;}vzMsg('',true);var a=new Audio('data:'+d.mime+';base64,'+d.audio);AU=a;var p=a.play();if(p&&p.catch){p.catch(function(){vzMsg('Tu navegador bloqueó el audio. Toca de nuevo.',false);});}},function(){vzMsg('No pude conectar.',false);});});
+  $('vz-test').addEventListener('click',function(){vzMsg('Probando…',true);callar();var nm=window.__nombre||'';if(VZ.loaded&&!VZ.on){vzMsg('',true);hablarNav('Hola'+(nm?', '+nm:'')+'. Así sueno con la voz de tu dispositivo. Soy Pau, tu asistente financiera. ¿Qué deseas analizar hoy?',null);return;}invocar({tts:'Hola'+(nm?', '+nm:'')+'. Así sueno. Soy Pau, tu asistente financiera. ¿Qué deseas analizar hoy?'}).then(function(r){var d=r&&r.data;if(!d||!d.ok||!d.audio){vzMsg(d&&d.detalle?String(d.detalle).slice(0,200):'No pude generar la voz. Revisa la llave, el nombre de la voz y que hayas actualizado la función de Supabase.',false);return;}vzMsg('',true);var a=new Audio('data:'+d.mime+';base64,'+d.audio);AU=a;var p=a.play();if(p&&p.catch){p.catch(function(){vzMsg('Tu navegador bloqueó el audio. Toca de nuevo.',false);});}},function(){vzMsg('No pude conectar.',false);});});
   vzCarga();
   function enseñar(){var P0=$('ai-panel');if(!P0.classList.contains('cfg')){cfAbrir();memCarga();}setTimeout(function(){var a=$('cf-mem');if(a&&a.scrollIntoView){a.scrollIntoView({block:'start',behavior:'smooth'});}var ta=$('mem-in');if(ta){try{ta.focus({preventScroll:true});}catch(e){}}},350);}
   $('ai-ens').addEventListener('click',enseñar);
