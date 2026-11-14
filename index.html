@@ -1506,10 +1506,14 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   function pmTiempo(p){return new Promise(function(ok,ko){var t=setTimeout(function(){ko(new Error('La lectura tardó demasiado. Revisa tu señal e intenta de nuevo con la foto más cerca del producto.'));},PM_ESPERA);p.then(function(v){clearTimeout(t);ok(v);},function(e){clearTimeout(t);ko(e);});});}
   function pmCard(){var d=el('div','msg a pm-card');M.appendChild(d);M.scrollTop=M.scrollHeight;return d;}
   function pmMotivo(d){var m=d&&d.motivo;if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}if(d&&d.detalle&&(m==='SIN_LLAVE'||m==='FORMATO'||m==='TAMANO')){return d.detalle;}return 'No pude leer la promoción. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
+  var PM_MAX_B64=380000; /* la función de Supabase se cuelga con envíos mayores (probado: 400.000 caracteres pasa, 800.000 no) */
   function pmPrepara(f){return new Promise(function(ok,ko){
-    if(f.type==='application/pdf'){if(f.size>10*1024*1024){ko(new Error('El PDF pesa más de 10 MB. Envíame solo las páginas que te interesan.'));return;}var r=new FileReader();r.onload=function(){ok({mime:'application/pdf',b64:String(r.result).split(',')[1]||''});};r.onerror=function(){ko(new Error('No pude abrir el archivo.'));};r.readAsDataURL(f);return;}
+    if(f.type==='application/pdf'){if(f.size*4/3>PM_MAX_B64){ko(new Error('El PDF pesa demasiado para enviarlo ('+(Math.round(f.size/1048576*10)/10).toString().replace('.',',')+' MB). Por ahora acepto fotos o PDF muy livianos: toma una captura de la p\u00e1gina con la promoci\u00f3n y env\u00eda esa imagen.'));return;}var r=new FileReader();r.onload=function(){ok({mime:'application/pdf',b64:String(r.result).split(',')[1]||''});};r.onerror=function(){ko(new Error('No pude abrir el archivo.'));};r.readAsDataURL(f);return;}
     var url=URL.createObjectURL(f);var im=new Image();
-    im.onload=function(){var k=Math.min(1,1800/Math.max(im.naturalWidth,im.naturalHeight));var c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);ok({mime:'image/jpeg',b64:c.toDataURL('image/jpeg',0.85).split(',')[1]});};
+    im.onload=function(){
+      var pasos=[[1400,0.75],[1200,0.7],[1000,0.65],[800,0.6]];var b64='';
+      for(var k=0;k<pasos.length;k++){var esc=Math.min(1,pasos[k][0]/Math.max(im.naturalWidth,im.naturalHeight));var c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.naturalWidth*esc));c.height=Math.max(1,Math.round(im.naturalHeight*esc));c.getContext('2d').drawImage(im,0,0,c.width,c.height);b64=c.toDataURL('image/jpeg',pasos[k][1]).split(',')[1]||'';if(b64.length<=PM_MAX_B64){break;}}
+      URL.revokeObjectURL(url);if(!b64||b64.length>PM_MAX_B64){ko(new Error('No pude reducir la foto lo suficiente. Toma la foto m\u00e1s cerca del producto.'));return;}ok({mime:'image/jpeg',b64:b64});};
     im.onerror=function(){URL.revokeObjectURL(url);ko(new Error('No pude abrir la imagen. Prueba con JPG o PNG.'));};im.src=url;});}
   function pmArchivo(f){
     if(!f){return;}if(enviando){add('s','Espera a que Pau termine la respuesta actual.');return;}
