@@ -849,6 +849,23 @@ button:active{transform:scale(.97)}
 .pm-pie{font-size:11px;color:var(--muted);margin-top:8px}
 .pm-off{opacity:.55;pointer-events:none}
 .ai-f #ai-foto{width:38px;height:38px;border-radius:12px}
+
+/* Micrófono estilo WhatsApp */
+.ai-rec{display:none;flex:1;min-width:0;height:44px;border-radius:999px;border:1.5px solid var(--brand);background:var(--soft);align-items:center;gap:10px;padding:0 14px;color:var(--text);font-size:14px}
+.ai-f.recording .ai-rec{display:flex}
+.ai-f.recording #ai-in,.ai-f.recording #ai-foto,.ai-f.recording #ai-spk,.ai-f.recording #ai-vmode,.ai-f.recording button[type=submit]{display:none}
+.ai-rec .rdot{width:10px;height:10px;border-radius:50%;background:#ef4444;flex:none;animation:pmblink 1s infinite}
+.ai-rec b{font-variant-numeric:tabular-nums;font-weight:600;flex:none}
+.ai-rec .rbars{display:flex;gap:3px;align-items:center;height:22px;flex:none}
+.ai-rec .rbars i{display:block;width:3px;border-radius:2px;background:var(--brand);height:5px;animation:pmbar .9s ease-in-out infinite}
+.ai-rec .rbars i:nth-child(2n){animation-delay:.15s}.ai-rec .rbars i:nth-child(3n){animation-delay:.32s}.ai-rec .rbars i:nth-child(5n){animation-delay:.5s}
+.ai-rec .rh{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.2;min-width:0}
+.ai-f.recording #ai-mic{background:#ef4444;border-color:#ef4444;color:#fff;transform:scale(1.12)}
+.ai-f.locked #ai-mic{border-radius:14px}
+@keyframes pmbar{0%,100%{height:5px}50%{height:20px}}
+@keyframes pmblink{50%{opacity:.25}}
+#ai-mic{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.pm-lee{margin:4px 0 6px;color:var(--text)}
 </style>
 </head>
 <body>
@@ -1052,7 +1069,7 @@ button:active{transform:scale(.97)}
   </div>
   <div class="ai-m" id="ai-m"></div>
   <div class="ai-sg" id="ai-sg"></div>
-  <form class="ai-f" id="ai-f"><button class="ai-ib" id="ai-foto" type="button" title="Analizar una foto o PDF de promoción" aria-label="Analizar foto o PDF de promoción"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><input type="file" id="ai-file" accept="image/*,application/pdf" hidden><button class="ai-ib" id="ai-mic" type="button" title="Dictar" aria-label="Dictar la pregunta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><input id="ai-in" type="text" placeholder="Pregúntale a Pau…" autocomplete="off" maxlength="500"><button class="ai-ib" id="ai-spk" title="Leer las respuestas en voz alta" aria-label="Leer las respuestas en voz alta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.500 8.500a5 5 0 0 1 0 7"/></svg></button><button class="ai-ib wv" id="ai-vmode" title="Hablar con Pau" aria-label="Modo voz"><span></span><span></span><span></span><span></span><span></span></button><button class="ai-ib act" type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+  <form class="ai-f" id="ai-f"><button class="ai-ib" id="ai-foto" type="button" title="Analizar una foto o PDF de promoción" aria-label="Analizar foto o PDF de promoción"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><input type="file" id="ai-file" accept="image/*,application/pdf" hidden><button class="ai-ib" id="ai-mic" type="button" title="Dictar" aria-label="Dictar la pregunta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><div class="ai-rec" id="ai-rec"><span class="rdot"></span><b id="ai-rt">0:00</b><span class="rbars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="rh" id="ai-rh"></span></div><input id="ai-in" type="text" placeholder="Pregúntale a Pau…" autocomplete="off" maxlength="500"><button class="ai-ib" id="ai-spk" title="Leer las respuestas en voz alta" aria-label="Leer las respuestas en voz alta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.500 8.500a5 5 0 0 1 0 7"/></svg></button><button class="ai-ib wv" id="ai-vmode" title="Hablar con Pau" aria-label="Modo voz"><span></span><span></span><span></span><span></span><span></span></button><button class="ai-ib act" type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
 </div>
 <div id="ai-voice" data-st="escuchando" role="dialog" aria-label="Conversación por voz">
   <button class="v-mb" id="v-mute" aria-label="Silenciar micrófono" aria-pressed="false"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/><path class="sl" d="M4 4l16 16"/></svg></button>
@@ -1436,7 +1453,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   function trozos(t){var s=String(t).replace(/\s+/g,' ').trim().split(/(?<=[.!?:])\s+/).filter(Boolean);var g=[];var cur='';s.forEach(function(x,k){if(!g.length&&!cur){g.push(x);return;}if((cur+' '+x).length>300){g.push(cur);cur=x;}else{cur=cur?cur+' '+x:x;}});if(cur){g.push(cur);}return g.slice(0,4);}
   function nubeCola(t,id){var q=trozos(t).map(pedir);var i=0;function sig(){if(id!==hId){return Promise.resolve(true);}if(i>=q.length){return Promise.resolve(true);}var k=i++;return q[k].then(function(d){if(!d){return k===0?false:sig();}return tocar(d,id).then(function(){return sig();});});}return sig();}
   function hablar(t,fin){var id=++hId;var fn=function(){if(id===hId&&fin){fin();}};if(!VZ.loaded){botSt('hablando');vzCarga().then(function(){if(id!==hId){return;}hablar2(t,id,fn);});return;}hablar2(t,id,fn);}
-  function hablar2(t,id,fn){if(VZ.on){botSt('hablando');nubeCola(t,id).then(function(ok){if(id!==hId){return;}if(!ok){botSt('idle');try{var w=$('v-tx');if(vOn&&w){w.textContent=w.textContent+'  (No pude generar la voz de Pau; reintenta.)';}}catch(e){}fn();}else{botSt('idle');fn();}});return;}hablarNav(t,fn);}
+  function hablar2(t,id,fn){if(VZ.on){botSt('hablando');nubeCola(t,id).then(function(ok){if(id!==hId){return;}if(!ok){hablarNav(t,fn);}else{botSt('idle');fn();}});return;}hablarNav(t,fn);}
   function hablarNav(t,fin){if(!('speechSynthesis' in window)){if(fin){fin();}return;}try{speechSynthesis.cancel();}catch(e){}var u=new SpeechSynthesisUtterance(paraVoz(t));u.lang='es-CO';var v=vozLatina();if(v){u.voice=v;u.lang=v.lang;}u.rate=1.08;u.pitch=1.2;var done=false;function end(){if(done){return;}done=true;botSt('idle');if(fin){fin();}}u.onend=end;u.onerror=end;u.onstart=function(){arranca();};botSt('hablando');speechSynthesis.speak(u);}
   /* Voz en español: primero colombiana, luego latina; la de España solo si el equipo no tiene otra */
   function vozLatina(){var vs=[];try{vs=speechSynthesis.getVoices()||[];}catch(e){}var es=vs.filter(function(x){return /^es/i.test(x.lang);});if(!es.length){return null;}var ord=['CO','MX','US','419','PE','EC','VE','CL','AR'];function pts(x){var m=/^es[-_]([A-Za-z0-9]+)/.exec(x.lang);var r=m?m[1].toUpperCase():'';var i=ord.indexOf(r);var p=i>=0?100-i*5:(r==='ES'?10:50);if(/colombia/i.test(x.name)){p+=30;}if(/natural|neural|online|google/i.test(x.name)){p+=12;}if(/salome|dalia|paola|sabina|paulina|camila|valentina|elena|female|mujer/i.test(x.name)){p+=15;}if(/jorge|gonzalo|pablo|raul|diego|male|hombre/i.test(x.name)&&!/female/i.test(x.name)){p-=15;}return p;}return es.sort(function(a,b){return pts(b)-pts(a);})[0];}
@@ -1460,9 +1477,10 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     var P=['Leo tu pregunta: «'+qq+'»','Reviso lo que me has enseñado (memoria de criterio)','Abro tu cuenta de Supabase · proyecto '+PROY+' (rafaelmauricio.ra)','Reviso las tablas: '+tb.join(', ')+' · facturas desde 2026-01-01','Calculo '+ot.join(' y ')];if(mes){P.push('Comparo mes contra mes y busco qué cambió');}P.push('Verifico que ninguna factura (CUFE) se cuente dos veces');P.push('Escribo la respuesta con '+(window.__ia||'la IA'));return P;}
   function pasosVer(box,q,cb){var P=pasosDe(q);var n=0;var tm=0;var dead=false;function rep(){if(cb&&!dead){var W=['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve'];cb('Paso '+W[n+1]+' de '+W[P.length]);}}function pinta(){box.textContent='';for(var i=Math.max(0,n-(box.closest&&box.closest('.v-think')?3:99));i<=n&&i<P.length;i++){var d=document.createElement('div');d.className='stp'+(i<n?' ok':' cur');var ic=document.createElement('b');ic.textContent=i<n?'✓':'›';d.appendChild(ic);d.appendChild(document.createTextNode(' Paso '+(i+1)+' · '+P[i]));if(i===n){var dd=document.createElement('span');dd.className='dots';dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));d.appendChild(dd);}box.appendChild(d);}rep();}
     pinta();tm=setInterval(function(){if(dead){clearInterval(tm);return;}if(n<P.length-1){n++;pinta();var m=document.getElementById('ai-m');if(m){m.scrollTop=m.scrollHeight;}}},1700);return function(){dead=true;clearInterval(tm);};}
-  function trazaTxt(d){var z=d&&d.traza;if(!z){return '';}var p=['Supabase · '+PROY];if(z.consultas){p.push(z.consultas+(z.consultas===1?' consulta':' consultas')+' · '+z.filas+' filas');}else{p.push('sin consultar la base');}if(z.ia){p.push('IA: '+z.ia);}if(z.memoria){p.push(z.memoria+' criterios de tu memoria aplicados');}if(z.aprendido){p.push('aprendí algo nuevo');}return p.join(' · ');}
+  function trazaTxt(d){return '';}function trazaTxt_off(d){var z=d&&d.traza;if(!z){return '';}var p=['Supabase · '+PROY];if(z.consultas){p.push(z.consultas+(z.consultas===1?' consulta':' consultas')+' · '+z.filas+' filas');}else{p.push('sin consultar la base');}if(z.ia){p.push('IA: '+z.ia);}if(z.memoria){p.push(z.memoria+' criterios de tu memoria aplicados');}if(z.aprendido){p.push('aprendí algo nuevo');}return p.join(' · ');}
   /* Envía la pregunta; devuelve una promesa con el texto que se mostró */
   function preguntar(t){t=String(t||'').trim();if(!t||enviando){return Promise.resolve('');}var hr=M.querySelector('.ai-hero');if(hr){hr.remove();}add('u',t);
+    var rLoc=pmLocal(t);if(rLoc){add('a',rLoc);hist.push({role:'user',content:t});hist.push({role:'assistant',content:rLoc});histGuarda();return Promise.resolve(rLoc);}
     if(esConsumo(t)){return traeUso().then(function(){var s=textoUso();add('a',s);$('ai-use').classList.add('on');return s;});}
     if(uso&&(uso.hoy>=uso.limite_dia||uso.semana>=uso.limite_semana)){var d0={motivo:uso.hoy>=uso.limite_dia?'LIMITE_DIA':'LIMITE_SEMANA',uso:uso};var s0=motivo(d0);addLim(d0);return Promise.resolve(s0);}
     enviando=true;var rid=++REQ;botSt('pensando');var w=add('a','');var wBox=el('div','stps');w.appendChild(wBox);var wStop=pasosVer(wBox,t);
@@ -1502,26 +1520,35 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     return {tag:tag,txt:base};
   }
   /*PM-PURE-FIN*/
-  var PM_ESPERA=60000; /* si la lectura tarda más de esto, Pau avisa en vez de quedarse pensando */
-  function pmTiempo(p){return new Promise(function(ok,ko){var t=setTimeout(function(){ko(new Error('La lectura tardó demasiado. Revisa tu señal e intenta de nuevo con la foto más cerca del producto.'));},PM_ESPERA);p.then(function(v){clearTimeout(t);ok(v);},function(e){clearTimeout(t);ko(e);});});}
+    /* Respuestas inmediatas, sin IA: saludos sueltos, "¿me escuchas?" y "no te escucho" */
+  function pmLocal(t){
+    var s=pmN(t).replace(/[^a-z0-9ñ\s]/g,' ').replace(/\s+/g,' ').trim();if(!s||s.length>45){return '';}
+    var nm=String(window.__nombre||'').split(' ')[0];var n=nm?', '+nm:'';
+    if(/\b(no te (escucho|oigo|oyo)|no se (escucha|oye)|por que no te (escucho|oigo))\b/.test(s)){return 'Parece que mi voz no te está llegando'+n+'. Toca el botón del parlante para activarla y sube el volumen del celular. Si sigue sin sonar, dímelo y lo reviso.';}
+    if(/\b(me escuchas|me oyes|me entiendes|me copias|estas ahi|sigues ahi)\b/.test(s)){return 'Sí'+n+', te escucho. ¿Qué quieres revisar ahora?';}
+    if(/^(hola|holi|buenas|buenos dias|buen dia|buenas tardes|buenas noches|hey|que mas|quiubo)( pau)?$/.test(s)){return 'Hola'+n+'. ¿Qué quieres revisar hoy?';}
+    return '';
+  }
+  var PM_VER='v4';var PM_ESPERA=60000; /* si la lectura tarda más de esto, Pau avisa en vez de quedarse pensando */
+  function pmTiempo(p){return new Promise(function(ok,ko){var t=setTimeout(function(){ko(new Error('La lectura tardó demasiado ('+PM_VER+(window.__pmKb?', envié '+window.__pmKb+' KB':'')+'). Revisa tu señal e intenta de nuevo con la foto más cerca del producto.'));},PM_ESPERA);p.then(function(v){clearTimeout(t);ok(v);},function(e){clearTimeout(t);ko(e);});});}
   function pmCard(){var d=el('div','msg a pm-card');M.appendChild(d);M.scrollTop=M.scrollHeight;return d;}
   function pmMotivo(d){var m=d&&d.motivo;if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}if(d&&d.detalle&&(m==='SIN_LLAVE'||m==='FORMATO'||m==='TAMANO')){return d.detalle;}return 'No pude leer la promoción. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
   var PM_MAX_B64=380000; /* la función de Supabase se cuelga con envíos mayores (probado: 400.000 caracteres pasa, 800.000 no) */
   function pmPrepara(f){return new Promise(function(ok,ko){
-    if(f.type==='application/pdf'){if(f.size*4/3>PM_MAX_B64){ko(new Error('El PDF pesa demasiado para enviarlo ('+(Math.round(f.size/1048576*10)/10).toString().replace('.',',')+' MB). Por ahora acepto fotos o PDF muy livianos: toma una captura de la p\u00e1gina con la promoci\u00f3n y env\u00eda esa imagen.'));return;}var r=new FileReader();r.onload=function(){ok({mime:'application/pdf',b64:String(r.result).split(',')[1]||''});};r.onerror=function(){ko(new Error('No pude abrir el archivo.'));};r.readAsDataURL(f);return;}
+    if(f.type==='application/pdf'){if(f.size*4/3>PM_MAX_B64){ko(new Error('El PDF pesa demasiado para enviarlo ('+(Math.round(f.size/1048576*10)/10).toString().replace('.',',')+' MB). Por ahora acepto fotos o PDF muy livianos: toma una captura de la p\u00e1gina con la promoci\u00f3n y env\u00eda esa imagen.'));return;}var r=new FileReader();r.onload=function(){var b=String(r.result).split(',')[1]||'';window.__pmKb=Math.round(b.length*0.75/1024);ok({mime:'application/pdf',b64:b});};r.onerror=function(){ko(new Error('No pude abrir el archivo.'));};r.readAsDataURL(f);return;}
     var url=URL.createObjectURL(f);var im=new Image();
     im.onload=function(){
       var pasos=[[1400,0.75],[1200,0.7],[1000,0.65],[800,0.6]];var b64='';
       for(var k=0;k<pasos.length;k++){var esc=Math.min(1,pasos[k][0]/Math.max(im.naturalWidth,im.naturalHeight));var c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.naturalWidth*esc));c.height=Math.max(1,Math.round(im.naturalHeight*esc));c.getContext('2d').drawImage(im,0,0,c.width,c.height);b64=c.toDataURL('image/jpeg',pasos[k][1]).split(',')[1]||'';if(b64.length<=PM_MAX_B64){break;}}
-      URL.revokeObjectURL(url);if(!b64||b64.length>PM_MAX_B64){ko(new Error('No pude reducir la foto lo suficiente. Toma la foto m\u00e1s cerca del producto.'));return;}ok({mime:'image/jpeg',b64:b64});};
+      URL.revokeObjectURL(url);if(!b64||b64.length>PM_MAX_B64){ko(new Error('No pude reducir la foto lo suficiente. Toma la foto m\u00e1s cerca del producto.'));return;}window.__pmKb=Math.round(b64.length*0.75/1024);ok({mime:'image/jpeg',b64:b64});};
     im.onerror=function(){URL.revokeObjectURL(url);ko(new Error('No pude abrir la imagen. Prueba con JPG o PNG.'));};im.src=url;});}
   function pmArchivo(f){
     if(!f){return;}if(enviando){add('s','Espera a que Pau termine la respuesta actual.');return;}
     var hr=M.querySelector('.ai-hero');if(hr){hr.remove();}
     var pista=$('ai-in').value.trim();$('ai-in').value='';
-    var u=add('u',pista||(f.type.indexOf('image/')===0?'Foto de la promoción':'Promoción en PDF'));
+    var u=add('u',pista||'');
     if(f.type.indexOf('image/')===0){var th=document.createElement('img');th.className='pm-th';th.alt='Foto de la promoción';th.src=URL.createObjectURL(f);u.insertBefore(th,u.firstChild);}else{u.insertBefore(document.createTextNode('📄 '+f.name+'\n'),u.firstChild);}
-    var w=add('a','Leyendo la promoción…');botSt('pensando');enviando=true;
+    var w=add('a','Voy a analizar la imagen…');botSt('pensando');enviando=true;
     pmTiempo(pmPrepara(f).then(function(a){return sb.functions.invoke('promo-analizar',{body:{archivo_b64:a.b64,mime:a.mime,pista:pista}});})).then(function(r){
       enviando=false;botSt('idle');try{w.remove();}catch(x){}
       var d=r.data;if(r.error||!d){add('s','No pude conectar con la lectura de promociones. Revisa tu conexión e intenta de nuevo.');return;}
@@ -1532,7 +1559,14 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   }
   function pmConfirmar(it){
     var c=pmCard();
-    c.appendChild(el('div','pm-h','Leí: '+it.producto+(it.marca?' '+it.marca:'')+' · $'+thou(it.precio)+' por '+pmCant(it.contenido_total,it.unidad)+(it.tienda?' · '+it.tienda:'')));
+    c.appendChild(el('div','pm-h','Analicé la imagen. Esto fue lo que leí:'));
+    var ul=el('ul','pm-obs pm-lee');
+    ul.appendChild(el('li',null,'Producto: '+it.producto+(it.marca?' '+it.marca:'')));
+    ul.appendChild(el('li',null,'Precio: $'+thou(it.precio)));
+    ul.appendChild(el('li',null,'Cantidad: '+pmCant(it.contenido_total,it.unidad)));
+    if(it.tienda){ul.appendChild(el('li',null,'Tienda: '+it.tienda));}
+    if(it.ciudades_restringidas&&it.ciudades_restringidas.length){ul.appendChild(el('li',null,'Aplica solo en: '+it.ciudades_restringidas.join(', ')));}
+    c.appendChild(ul);
     c.appendChild(el('p','pm-s','¿Quieres que lo compare con productos parecidos de tus compras?'));
     var row=el('div','pm-row');var si=el('button','pm-b pri','Sí, comparar');si.type='button';var no=el('button','pm-b','No');no.type='button';row.appendChild(si);row.appendChild(no);c.appendChild(row);
     no.addEventListener('click',function(){c.remove();add('a','Listo, no comparo nada. Cuando quieras, envía otra foto.');});
@@ -1612,7 +1646,39 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     r.onerror=function(e){if(listo){return;}listo=true;rec=null;botSt('idle');onFin(e.error||'error');};
     r.onend=function(){if(listo){return;}listo=true;rec=null;botSt('idle');if(fin.trim()){onFinal(fin.trim());}else{onFin('vacio');}};
     try{r.start();botSt('escuchando');}catch(e){listo=true;rec=null;onFin('error');}}
-  $('ai-mic').addEventListener('click',function(){if(rec){pararRec();return;}if(!SR){add('s','Este navegador no permite dictar. Usa Chrome, o escribe la pregunta.');return;}callar();$('ai-mic').classList.add('rec');oir(function(t){$('ai-in').value=t;},function(t){$('ai-mic').classList.remove('rec');$('ai-in').value='';leer=true;$('ai-spk').classList.add('act');enviar(t);},function(why){$('ai-mic').classList.remove('rec');if(why==='not-allowed'||why==='service-not-allowed'){add('s','El navegador bloqueó el micrófono. Dale permiso en el candado de la barra de direcciones.');}});});
+  /* Micrófono estilo WhatsApp: mantén presionado para hablar y suelta para terminar; desliza hacia arriba (o toca una vez) para dejarlo grabando sin mantener.
+     El texto queda en la caja para que tú lo envíes con la flecha. */
+  var dic=null,dicLock=false,dicDown=false,dicY0=0,dicTap=0,dicT0=0,dicTm=0;
+  function dicTiempo(){var s=Math.floor((Date.now()-dicT0)/1000);$('ai-rt').textContent=Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);}
+  function dicUi(on,lock){var f=$('ai-f');f.classList.toggle('recording',!!on);f.classList.toggle('locked',!!lock);$('ai-mic').classList.toggle('rec',!!on);$('ai-rh').textContent=lock?'Toca el micrófono para terminar':'Suelta para terminar · desliza ↑ para fijar';}
+  function dicInicia(){
+    if(dic){return;}
+    if(!SR){add('s','Este navegador no permite dictar. Usa Chrome, o escribe la pregunta.');return;}
+    callar();pararRec();
+    var base=$('ai-in').value.trim();var S={vivo:true,acum:'',cur:'',r:null,n:0,err:''};dic=S;
+    function pinta(){$('ai-in').value=(base+' '+S.acum+' '+S.cur).replace(/\s+/g,' ').trim();}
+    function lanza(){
+      var r=new SR();S.r=r;r.lang='es-CO';r.interimResults=true;r.continuous=true;r.maxAlternatives=1;var f='';
+      r.onresult=function(e){var fi='',pa='';for(var i=0;i<e.results.length;i++){if(e.results[i].isFinal){fi+=e.results[i][0].transcript;}else{pa+=e.results[i][0].transcript;}}f=fi;S.cur=(fi+' '+pa).trim();pinta();};
+      r.onerror=function(e){if(e.error==='not-allowed'||e.error==='service-not-allowed'){S.vivo=false;S.err=e.error;}};
+      r.onend=function(){S.acum=(S.acum+' '+S.cur).trim();S.cur='';pinta();if(S.vivo&&++S.n<40){try{lanza();}catch(x){S.vivo=false;dicFin(S);}}else{dicFin(S);}};
+      try{r.start();}catch(x){S.vivo=false;dicFin(S);}
+    }
+    lanza();dicT0=Date.now();clearInterval(dicTm);dicTm=setInterval(dicTiempo,500);dicTiempo();dicUi(true,false);
+  }
+  function dicParar(){var S=dic;if(!S){return;}S.vivo=false;try{if(S.r){S.r.stop();}}catch(e){}setTimeout(function(){if(dic===S){dicFin(S);}},900);}
+  function dicFin(S){if(dic!==S){return;}dic=null;dicLock=false;dicDown=false;clearInterval(dicTm);dicUi(false,false);var tx=$('ai-in').value.trim();
+    if(S.err){add('s','El navegador bloqueó el micrófono. Dale permiso en el candado de la barra de direcciones.');}
+    else if(!tx){add('s','No te escuché. Mantén presionado el micrófono y habla.');}
+    else{leer=true;$('ai-spk').classList.add('act');try{$('ai-in').focus();}catch(e){}}}
+  (function(){
+    var mic=$('ai-mic');mic.style.touchAction='none';
+    mic.addEventListener('contextmenu',function(e){e.preventDefault();});
+    mic.addEventListener('pointerdown',function(e){e.preventDefault();if(dic){if(dicLock){dicParar();}return;}dicDown=true;dicY0=e.clientY;dicTap=Date.now();try{mic.setPointerCapture(e.pointerId);}catch(x){}dicInicia();if(!dic){dicDown=false;}});
+    mic.addEventListener('pointermove',function(e){if(!dicDown||!dic||dicLock){return;}if(dicY0-e.clientY>55){dicLock=true;dicUi(true,true);}});
+    function suelta(){if(!dicDown){return;}dicDown=false;if(!dic||dicLock){return;}if(Date.now()-dicTap<450){dicLock=true;dicUi(true,true);return;}dicParar();}
+    mic.addEventListener('pointerup',suelta);mic.addEventListener('pointercancel',suelta);
+  })();
   /* Modo voz: bordes verdes y ondas */
   var V=$('ai-voice');var cvs=$('v-wave');var ctx=cvs.getContext('2d');var raf=0;var t0=0;
   function est(s,txt){if(s!=='pensando'&&thStop){thStop();thStop=null;}V.setAttribute('data-st',s);$('v-st').textContent=txt;ampT=s==='hablando'?1:(s==='escuchando'?0.14:(s==='pensando'?0.22:0.05));}
