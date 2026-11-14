@@ -743,6 +743,16 @@ th:first-child,td:first-child{text-align:left}
 .mem-d{border:0;background:transparent;color:var(--muted);font-size:14px;cursor:pointer;padding:0 2px}
 
 /* Segmentos de Lectura */
+
+.pctabs{display:none}
+@media (max-width:820px){
+ .pctabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface2);border:1px solid var(--line);border-radius:16px;padding:4px;margin:0 0 12px;position:sticky;top:0;z-index:5}
+ .pctabs button{border:0;background:transparent;color:var(--muted);font:700 13px/1 inherit;font-family:inherit;padding:11px 8px;border-radius:12px;cursor:pointer;transition:background .2s,color .2s}
+ .pctabs button.on{background:var(--brand);color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+ body[data-pc=prov] #sec6{display:none}
+ body[data-pc=cat] #sec5{display:none}
+ #prov-list,#cat-list{max-height:58vh}
+}
 .seg{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--surface2);border:1px solid var(--line);border-radius:16px;padding:4px;margin:2px 0 12px;position:sticky;top:8px;z-index:6;backdrop-filter:blur(10px)}
 .seg button{position:relative;z-index:1;border:0;background:transparent;color:var(--muted);font:700 12px/1 inherit;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px;padding:11px 4px;border-radius:12px;cursor:pointer;transition:color .25s;min-width:0}
 .seg button svg{width:14px;height:14px;flex:none}@media (max-width:430px){.seg button svg{display:none}.seg button{font-size:11px;gap:4px}}.seg button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -895,6 +905,8 @@ button:active{transform:scale(.97)}
 
 <div class="sec" id="sec4"><div class="sh"><div class="no">4</div><div><h2>Facturación e impuestos por mes</h2><div class="sub2">Haz clic en un mes para filtrar todo el tablero. Gasto neto = compras menos notas crédito del mes. Ambas series usan el mismo eje en pesos.</div></div></div>
 <div class="card"><div class="leg"><span><i style="background:var(--chart-a)"></i>Gasto neto</span><span><i style="background:var(--chart-b)"></i>Impuestos pagados (IVA + INC)</span></div><div class="chart" id="chart-mes"></div></div></div>
+
+<div class="pctabs" id="pc-tabs" role="tablist"><button type="button" role="tab" data-p="prov" class="on" aria-selected="true">Proveedores</button><button type="button" role="tab" data-p="cat" aria-selected="false">Categorías</button></div>
 
 <div class="sec" id="sec5"><div class="sh"><div class="no">5</div><div><h2>Proveedores</h2><div class="sub2">Todos los emisores ordenados por gasto neto. Haz clic en uno para filtrar todo el tablero.</div></div></div>
 <div class="card"><div class="scrollbox" id="prov-list"></div></div></div>
@@ -1237,7 +1249,7 @@ function renderCat(){var host=$('cat-list');host.textContent='';var d=rowsOf('ca
     if(open){d.filter(function(x){return x.categoria===ct.categoria&&x.subcategoria!==null&&x.subcategoria!==undefined;}).sort(function(a,b){return b.valor-a.valor;}).forEach(function(s2){var selS=c.subcategoria===s2.subcategoria&&c.categoria===ct.categoria;var sr=el('div','row cat srow'+(selS?' sel':''));var snm=el('div','nm',s2.subcategoria);var st=el('div','track');var sf=el('div','fill');sf.style.width=Math.max(1,s2.valor/max*100).toFixed(1)+'%';st.appendChild(sf);var sv=el('div','v',pesos(s2.valor));sr.appendChild(snm);sr.appendChild(st);sr.appendChild(sv);
       sr.addEventListener('click',function(){hideTip();if(selS){dash.setParams({categoria:ct.categoria,subcategoria:''});}else{dash.setParams({categoria:ct.categoria,subcategoria:s2.subcategoria});}});
       sr.addEventListener('mousemove',function(ev){showTip(ev,[ct.categoria+' · '+s2.subcategoria,'Valor: '+pesos(s2.valor),s2.items+' ítems',s2.facturas+' facturas']);});sr.addEventListener('mouseleave',hideTip);host.appendChild(sr);});}});}
-function renderImp(){var tb=$('b-imp');tb.textContent='';var d=rowsOf('impuestos');if(!d){return;}d.forEach(function(x){var tr=document.createElement('tr');[x.tipo_impuesto,pct2(x.tarifa),x.items,pesos(x.base),pesos(x.valor)].forEach(function(v){tr.appendChild(el('td',null,String(v)));});tb.appendChild(tr);});}
+function renderImp(){var tb=$('b-imp');tb.textContent='';var d=rowsOf('impuestos');if(!d){return;}d.forEach(function(x){if(!(Number(x.valor)>0)){return;}var tr=document.createElement('tr');[x.tipo_impuesto,pct2(x.tarifa),x.items,pesos(x.base),pesos(x.valor)].forEach(function(v){tr.appendChild(el('td',null,String(v)));});tb.appendChild(tr);});}
 function dotc(id,col){var e=$(id);if(e){e.style.background=col;}}
 function renderCalidad(){var c=rowsOf('calidad');if(!c||!c.length){return;}var q=c[0];setTxt('q-pct',pc(q.pct_cuadre));setTxt('q-ci',q.cuadran);setTxt('q-f',q.facturas);setTxt('q-sin',q.sin_items);setTxt('q-vsin',pesos(q.valor_sin_items));setTxt('q-dif',q.con_dif);setTxt('q-difv',pesos(q.dif_abs));dotc('d1',semColor(Number(q.pct_cuadre)));dotc('d2',Number(q.sin_items)>0?'#D69E2E':'#1E8E3E');dotc('d3',Number(q.con_dif)>0?'#D69E2E':'#1E8E3E');setTxt('q-desc',pesos(q.total_descuentos));setTxt('q-cdesc',q.con_descuento);setTxt('q-dup',q.posibles_duplicados);dotc('d5',Number(q.posibles_duplicados)>0?'#C0392B':'#1E8E3E');setTxt('q-dupd',Number(q.posibles_duplicados)>0?'Revisar: '+q.dup_detalle+'. Mismo proveedor, fecha y valor con distinto tipo de documento (01 y 03).':'Ninguno: no hay facturas del mismo proveedor, fecha y valor con distinto tipo de documento (01 y 03).');}
 var KT={sinimp:{t:'Sin impuesto reportado por el emisor',e:'El XML de estos ítems no trae impuesto. Como el total de cada factura cuadra sin ellos, se tratan como productos o servicios sin impuesto (por ejemplo, la mensualidad del gimnasio) y su valor entra al «Valor sin impuesto». No es un error. Haz clic en un ítem para ver su factura completa.',u:'Valor sin impuesto'},base:{t:'Ítems con base gravable',e:'Ítems con IVA registrado: su valor antes de impuestos es la base gravable sobre la que se calcula el IVA. Incluye ítems a tarifa 0%, donde el IVA es $0.',u:'Base gravable'},iva:{t:'Ítems con IVA',e:'Ítems que pagan IVA: base gravable más el IVA calculado. Ordenados por valor de IVA.',u:'IVA'},inc:{t:'Ítems con impoconsumo (INC)',e:'Ítems que pagan impoconsumo u otros impuestos distintos del IVA. Ordenados por valor de INC.',u:'INC'},subtotal:{t:'Ítems del subtotal antes de impuestos',e:'Todos los ítems, cada uno con su valor antes de impuestos y su tratamiento: con IVA, base a tarifa 0%, con impoconsumo o sin impuesto. La suma por ítems puede diferir del subtotal de las tarjetas en las facturas sin ítems cargados.',u:'Suma de ítems antes de impuestos'},cuadre:{t:'Estado de cada factura',e:'Una factura cuadra cuando valor total = suma de ítems (antes de impuestos) + IVA + INC − descuento de la factura + cargos, con tolerancia de $50. Diferencia = valor total menos esa suma. Haz clic en una factura para ver sus ítems.',u:'Compras brutas'},sinitems:{t:'Facturas sin ítems',e:'Facturas que existen con su total pero no tienen ítems cargados, así que no se sabe qué producto lleva impuesto.',u:'Compras brutas'},notas:{t:'Notas crédito (devoluciones)',e:'Notas crédito del filtro activo. Restan del gasto en el mes en que se emitió la nota, sin importar el mes de su factura de origen.',u:'Notas crédito'},impuestos:{t:'Resumen de impuestos',e:'IVA e impoconsumo (INC) del filtro activo, netos de notas crédito, con su desglose por tipo y tarifa.',u:'Total impuestos'},difer:{t:'Facturas con diferencia',e:'Facturas con ítems cuyo total no es igual a ítems + IVA + INC − descuento + cargos (más de $50 de diferencia). Haz clic en una factura para ver sus ítems.',u:'Compras brutas'}};
@@ -1415,7 +1427,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     if(uso&&(uso.hoy>=uso.limite_dia||uso.semana>=uso.limite_semana)){var d0={motivo:uso.hoy>=uso.limite_dia?'LIMITE_DIA':'LIMITE_SEMANA',uso:uso};var s0=motivo(d0);addLim(d0);return Promise.resolve(s0);}
     enviando=true;botSt('pensando');var w=add('a','');var wBox=el('div','stps');w.appendChild(wBox);var wStop=pasosVer(wBox,t);
     return invocar({pregunta:t,historial:hist.slice(-20),modo:(vOn?'voz':'texto')}).then(function(r){wStop();enviando=false;botSt('idle');var d=r.data;
-      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v4.3, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
+      if(r.error||!d){w.remove();var s1=/not found|404|Failed to send/i.test(String(r.error&&r.error.message))?'No encontré la función del asistente en Supabase (versión v4.4, probé quick-processor y asistente). Detalle: '+String(r.error&&r.error.message||'sin detalle'):'No pude conectar con el asistente. Revisa tu conexión e intenta de nuevo.';add('s',s1);return s1;}
       if(d.uso){uso=d.uso;pintaUso();}
       if(!d.ok){w.remove();var s2=motivo(d);if(d.motivo==='LIMITE_DIA'||d.motivo==='LIMITE_SEMANA'){addLim(d);}else{add('s',s2);}return s2;}
       w.textContent=d.respuesta;window.__trazaTxt=trazaTxt(d);if(d.traza&&d.traza.ia){window.__ia=d.traza.ia;}if(window.__trazaTxt){w.appendChild(el('div','trz',window.__trazaTxt));}M.scrollTop=M.scrollHeight;hist.push({role:'user',content:t});hist.push({role:'assistant',content:d.respuesta});histGuarda();
@@ -1744,6 +1756,14 @@ f.addEventListener('pointerdown',function(e){dn=true;mv=false;sx=e.clientX;sy=e.
 f.addEventListener('pointermove',function(e){if(!dn)return;var dx=e.clientX-sx,dy=e.clientY-sy;if(!mv&&Math.abs(dx)+Math.abs(dy)<8)return;mv=true;var l=Math.max(4,Math.min(innerWidth-f.offsetWidth-4,ox+dx)),t=Math.max(4,Math.min(innerHeight-f.offsetHeight-4,oy+dy));f.style.left=l+'px';f.style.top=t+'px';f.style.right='auto';f.style.bottom='auto';});
 f.addEventListener('pointerup',function(){dn=false;if(mv){try{localStorage.setItem('fc-fab',JSON.stringify({l:parseFloat(f.style.left),t:parseFloat(f.style.top)}));}catch(e){}}});
 f.addEventListener('click',function(e){if(mv){e.stopImmediatePropagation();e.preventDefault();mv=false;}},true);})();
+
+/* Proveedores | Categorías (móvil) */
+(function(){var B=document.body;B.setAttribute('data-pc','prov');var bs=document.querySelectorAll('#pc-tabs button');
+ function setPC(p){B.setAttribute('data-pc',p);for(var i=0;i<bs.length;i++){var on=bs[i].getAttribute('data-p')===p;bs[i].classList.toggle('on',on);bs[i].setAttribute('aria-selected',on?'true':'false');}}
+ window.setPC=setPC;
+ for(var i=0;i<bs.length;i++){bs[i].addEventListener('click',function(){setPC(this.getAttribute('data-p'));});}
+ var nv=document.getElementById('mnav');if(nv){nv.addEventListener('click',function(ev){var b=ev.target.closest?ev.target.closest('button'):null;if(b&&b.getAttribute('data-t')==='sec5'){setPC('prov');}},true);}
+})();
 </script>
 </body>
 </html>
