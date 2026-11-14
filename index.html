@@ -820,6 +820,35 @@ button:active{transform:scale(.97)}
 #ai-voice[data-st=pausa] .pau-big:before{animation:none;opacity:.25}
 @keyframes pring{0%{transform:scale(.92);opacity:.9}100%{transform:scale(1.22);opacity:0}}
 @media (prefers-reduced-motion:reduce){.pau-svg,.pau-eyes,.pau-big:before{animation:none!important}}
+
+/* Analizar promoción */
+.msg.pm-card{max-width:96%;width:96%;white-space:normal;padding:12px}
+.pm-h{font-weight:700;font-size:13.5px;color:var(--head);margin-bottom:6px}
+.pm-s{font-size:12px;color:var(--muted);margin:0 0 8px}
+.pm-th{display:block;max-width:180px;max-height:140px;border-radius:10px;margin-bottom:6px;object-fit:cover}
+.pm-ck{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line);font-size:13px;cursor:pointer}
+.pm-ck input{margin-top:3px;accent-color:var(--brand);width:18px;height:18px;flex:none}
+.pm-ck small{display:block;color:var(--muted);font-size:11.5px}
+.pm-row{display:flex;gap:8px;margin-top:10px}
+.pm-b{flex:1;min-height:40px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--text);font-weight:600;font-size:13px;cursor:pointer;padding:6px 10px;text-align:left}
+.pm-row .pm-b{text-align:center}
+.pm-b.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+[data-theme=dark] .pm-b.pri{color:#04210F}
+.pm-li{display:block;width:100%;margin-top:6px}
+.pm-t{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0}
+.pm-t th{text-align:left;font-size:11px;color:var(--muted);font-weight:600;padding:4px 6px;border-bottom:1px solid var(--line)}
+.pm-t td{padding:7px 6px;border-bottom:1px solid var(--line2);vertical-align:top}
+.pm-t th.n,.pm-t td.n{text-align:right}
+.pm-t tr.pr td{background:var(--soft);font-weight:600}
+.pm-t tr.sub td{color:var(--muted)}
+.pm-obs{margin:6px 0 0;padding-left:16px;font-size:12px;color:var(--muted)}
+.pm-con{margin-top:10px;padding:10px 12px;border-radius:12px;font-weight:700;font-size:13.5px;line-height:1.45}
+.pm-con.conviene{background:var(--soft2);color:var(--head)}
+.pm-con.no{background:var(--amber-soft);border:1px solid var(--amber-line);color:var(--text)}
+.pm-con.igual{background:var(--surface);border:1px solid var(--line)}
+.pm-pie{font-size:11px;color:var(--muted);margin-top:8px}
+.pm-off{opacity:.55;pointer-events:none}
+.ai-f #ai-foto{width:38px;height:38px;border-radius:12px}
 </style>
 </head>
 <body>
@@ -1023,7 +1052,7 @@ button:active{transform:scale(.97)}
   </div>
   <div class="ai-m" id="ai-m"></div>
   <div class="ai-sg" id="ai-sg"></div>
-  <form class="ai-f" id="ai-f"><button class="ai-ib" id="ai-mic" type="button" title="Dictar" aria-label="Dictar la pregunta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><input id="ai-in" type="text" placeholder="Pregúntale a Pau…" autocomplete="off" maxlength="500"><button class="ai-ib" id="ai-spk" title="Leer las respuestas en voz alta" aria-label="Leer las respuestas en voz alta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.500 8.500a5 5 0 0 1 0 7"/></svg></button><button class="ai-ib wv" id="ai-vmode" title="Hablar con Pau" aria-label="Modo voz"><span></span><span></span><span></span><span></span><span></span></button><button class="ai-ib act" type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+  <form class="ai-f" id="ai-f"><button class="ai-ib" id="ai-foto" type="button" title="Analizar una foto o PDF de promoción" aria-label="Analizar foto o PDF de promoción"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><input type="file" id="ai-file" accept="image/*,application/pdf" hidden><button class="ai-ib" id="ai-mic" type="button" title="Dictar" aria-label="Dictar la pregunta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><input id="ai-in" type="text" placeholder="Pregúntale a Pau…" autocomplete="off" maxlength="500"><button class="ai-ib" id="ai-spk" title="Leer las respuestas en voz alta" aria-label="Leer las respuestas en voz alta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.500 8.500a5 5 0 0 1 0 7"/></svg></button><button class="ai-ib wv" id="ai-vmode" title="Hablar con Pau" aria-label="Modo voz"><span></span><span></span><span></span><span></span><span></span></button><button class="ai-ib act" type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
 </div>
 <div id="ai-voice" data-st="escuchando" role="dialog" aria-label="Conversación por voz">
   <button class="v-mb" id="v-mute" aria-label="Silenciar micrófono" aria-pressed="false"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/><path class="sl" d="M4 4l16 16"/></svg></button>
@@ -1457,6 +1486,109 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   $('ai-x').addEventListener('click',cerrar);
   $('ai-ring').addEventListener('click',function(){$('ai-use').classList.toggle('on');traeUso();});
   $('ai-spk').addEventListener('click',function(){leer=!leer;$('ai-spk').classList.toggle('act',leer);if(!leer){callar();}});
+  /* ===== Analizar una promoción (foto, captura o PDF): la compara con tus facturas. No guarda nada. ===== */
+  var PROMO_CIUDAD='Neiva'; /* ciudad donde compras: si la promoción solo aplica en otra, Pau te lo avisa */
+  /*PM-PURE-INI*/
+  function pmN(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');}
+  function pmCant(c,u){var f=function(x){return String(Math.round(x*100)/100).replace('.',',');};if(u==='g'){return c>=1000?f(c/1000)+' kg':f(c)+' g';}if(u==='ml'){return c>=1000?f(c/1000)+' L':f(c)+' ml';}return f(c)+' und';}
+  function pmDif(promo,ref){var d=promo-ref;var p=ref>0?Math.abs(d)/ref*100:0;var sg=d>=0?'+':'−';return sg+'$'+thou(Math.abs(d))+' ('+sg+Math.round(p)+' %)';}
+  function pmAplica(ciud){if(!ciud||!ciud.length){return true;}var c=pmN(PROMO_CIUDAD);for(var i=0;i<ciud.length;i++){if(pmN(ciud[i]).indexOf(c)>=0){return true;}}return false;}
+  function pmVeredicto(it,provs){
+    var best=provs[0];var ref=best.precio_ultima_compra;var pct=ref>0?(it.precio-ref)/ref*100:0;var tag='igual';var base='';
+    if(pct<=-3){tag='conviene';base='Conviene: cuesta '+Math.round(-pct)+' % menos que tu última compra en '+best.proveedor+' ($'+thou(ref)+').';}
+    else if(pct>=3){tag='no';base='No conviene: cuesta '+Math.round(pct)+' % más que tu última compra en '+best.proveedor+' ($'+thou(it.precio)+' frente a $'+thou(ref)+').';}
+    else{base='Es prácticamente el mismo precio que pagas en '+best.proveedor+' ($'+thou(ref)+').';}
+    if(!pmAplica(it.ciudades_restringidas)){return {tag:'no',txt:'No te sirve en '+PROMO_CIUDAD+': la promoción aplica solo en '+it.ciudades_restringidas.join(', ')+'. Sobre el precio: '+base};}
+    return {tag:tag,txt:base};
+  }
+  /*PM-PURE-FIN*/
+  function pmCard(){var d=el('div','msg a pm-card');M.appendChild(d);M.scrollTop=M.scrollHeight;return d;}
+  function pmMotivo(d){var m=d&&d.motivo;if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}if(d&&d.detalle&&(m==='SIN_LLAVE'||m==='FORMATO'||m==='TAMANO')){return d.detalle;}return 'No pude leer la promoción. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
+  function pmPrepara(f){return new Promise(function(ok,ko){
+    if(f.type==='application/pdf'){if(f.size>10*1024*1024){ko(new Error('El PDF pesa más de 10 MB. Envíame solo las páginas que te interesan.'));return;}var r=new FileReader();r.onload=function(){ok({mime:'application/pdf',b64:String(r.result).split(',')[1]||''});};r.onerror=function(){ko(new Error('No pude abrir el archivo.'));};r.readAsDataURL(f);return;}
+    var url=URL.createObjectURL(f);var im=new Image();
+    im.onload=function(){var k=Math.min(1,1800/Math.max(im.naturalWidth,im.naturalHeight));var c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);ok({mime:'image/jpeg',b64:c.toDataURL('image/jpeg',0.85).split(',')[1]});};
+    im.onerror=function(){URL.revokeObjectURL(url);ko(new Error('No pude abrir la imagen. Prueba con JPG o PNG.'));};im.src=url;});}
+  function pmArchivo(f){
+    if(!f){return;}if(enviando){add('s','Espera a que Pau termine la respuesta actual.');return;}
+    var hr=M.querySelector('.ai-hero');if(hr){hr.remove();}
+    var pista=$('ai-in').value.trim();$('ai-in').value='';
+    var u=add('u',pista||'Analiza esta promoción');
+    if(f.type.indexOf('image/')===0){var th=document.createElement('img');th.className='pm-th';th.alt='Foto de la promoción';th.src=URL.createObjectURL(f);u.insertBefore(th,u.firstChild);}else{u.insertBefore(document.createTextNode('📄 '+f.name+'\n'),u.firstChild);}
+    var w=add('a','Leyendo la promoción…');botSt('pensando');enviando=true;
+    pmPrepara(f).then(function(a){return sb.functions.invoke('promo-analizar',{body:{archivo_b64:a.b64,mime:a.mime,pista:pista}});}).then(function(r){
+      enviando=false;botSt('idle');try{w.remove();}catch(x){}
+      var d=r.data;if(r.error||!d){add('s','No pude conectar con la lectura de promociones. Revisa tu conexión e intenta de nuevo.');return;}
+      if(!d.ok){add('s',pmMotivo(d));return;}
+      var its=d.items||[];if(!its.length){add('s','No encontré productos con precio que se lean bien. Acércate más o toma la foto con más luz.');return;}
+      if(its.length===1){pmCandidatos(its[0]);}else{pmElegir(its);}
+    }).catch(function(e){enviando=false;botSt('idle');try{w.remove();}catch(x){}add('s',String(e&&e.message||'No pude leer el archivo.'));});
+  }
+  function pmElegir(its){
+    var c=pmCard();c.appendChild(el('div','pm-h','Encontré '+its.length+' productos. ¿Cuál analizo?'));
+    its.forEach(function(it){var b=el('button','pm-b pm-li',it.producto+(it.marca?' '+it.marca:'')+' · $'+thou(it.precio)+' · '+pmCant(it.contenido_total,it.unidad));b.type='button';b.addEventListener('click',function(){c.classList.add('pm-off');pmCandidatos(it);});c.appendChild(b);});
+    M.scrollTop=M.scrollHeight;
+  }
+  function pmCandidatos(it){
+    if(it.unidad==='und'){add('s','Leí «'+it.producto+'» a $'+thou(it.precio)+' por '+pmCant(it.contenido_total,'und')+'. Por ahora comparo promociones en gramos o mililitros; las de unidades vienen en la siguiente versión.');return;}
+    var w=add('a','Busco en tus facturas productos parecidos…');botSt('pensando');enviando=true;
+    var pal=(it.palabras_clave&&it.palabras_clave.length)?it.palabras_clave:String(it.producto).split(/\s+/).slice(0,2);
+    sb.functions.invoke('promo-analizar',{body:{accion:'candidatos',palabras:pal}}).then(function(r){
+      enviando=false;botSt('idle');try{w.remove();}catch(x){}
+      var d=r.data;if(r.error||!d||!d.ok){add('s',pmMotivo(d||{}));return;}
+      var cs=d.candidatos||[];if(!cs.length){add('s','No encontré en tus facturas nada parecido a «'+it.producto+'». O nunca lo has comprado, o está registrado con otro nombre.');return;}
+      pmCardElegir(it,cs);
+    },function(){enviando=false;botSt('idle');try{w.remove();}catch(x){}add('s','No pude consultar tus facturas. Intenta de nuevo.');});
+  }
+  function pmCardElegir(it,cs){
+    var c=pmCard();
+    c.appendChild(el('div','pm-h','Leí: '+it.producto+(it.marca?' '+it.marca:'')+' · $'+thou(it.precio)+' por '+pmCant(it.contenido_total,it.unidad)+(it.tienda?' · '+it.tienda:'')));
+    c.appendChild(el('p','pm-s','¿Con cuáles de tus compras lo comparo? Marca o desmarca.'));
+    var cks=[];
+    cs.forEach(function(x){var lb=el('label','pm-ck');var cb=document.createElement('input');cb.type='checkbox';cb.checked=!!x.sel;cb.value=x.id;cks.push({cb:cb,nombre:x.nombre});lb.appendChild(cb);var sp=el('span',null,x.nombre);sp.appendChild(el('small',null,x.compras+(x.compras===1?' compra':' compras')+' · última '+x.ultima));lb.appendChild(sp);c.appendChild(lb);});
+    var row=el('div','pm-row');var bc=el('button','pm-b pri','Comparar');bc.type='button';var bx=el('button','pm-b','Cancelar');bx.type='button';row.appendChild(bc);row.appendChild(bx);c.appendChild(row);
+    bx.addEventListener('click',function(){c.remove();});
+    bc.addEventListener('click',function(){var ids=[];var nom=[];cks.forEach(function(k){if(k.cb.checked){ids.push(Number(k.cb.value));nom.push(k.nombre);}});if(!ids.length){add('s','Marca al menos un producto para comparar.');return;}c.classList.add('pm-off');pmComparar(it,ids,nom);});
+    M.scrollTop=M.scrollHeight;
+  }
+  function pmComparar(it,ids,nom){
+    var w=add('a','Comparando con tus facturas…');botSt('pensando');enviando=true;
+    sb.rpc('app_promo_comparar',{p_productos:ids,p_cantidad:it.contenido_total,p_unidad:it.unidad}).then(function(r){
+      enviando=false;botSt('idle');try{w.remove();}catch(x){}
+      var d=r.data;if(r.error||!d){add('s','No pude comparar: '+String(r.error&&r.error.message||'sin detalle').slice(0,140));return;}
+      if(!d.ok){add('s',d.detalle||'No pude comparar.');return;}
+      if(!d.proveedores||!d.proveedores.length){add('s','Esos productos no traen la presentación legible en tus facturas ('+d.lineas_sin_presentacion+' compras), así que no pude convertirlos a '+(it.unidad==='g'?'gramos':'mililitros')+'.');return;}
+      pmResultado(it,d,nom);
+    },function(){enviando=false;botSt('idle');try{w.remove();}catch(x){}add('s','No pude comparar. Intenta de nuevo.');});
+  }
+  function pmResultado(it,d,nom){
+    var c=pmCard();var ver=pmVeredicto(it,d.proveedores);var tienda=it.tienda||'La promo';
+    c.appendChild(el('div','pm-h','Para '+pmCant(it.contenido_total,it.unidad)+' de '+it.producto));
+    c.appendChild(el('p','pm-s','Precios de tus facturas con impuestos sumados.'));
+    var t=el('table','pm-t');var th=el('tr');['Dónde','Precio','Diferencia'].forEach(function(h,i){th.appendChild(el('th',i?'n':null,h));});t.appendChild(th);
+    function fila(cls,a,b,cdif){var tr=el('tr',cls);tr.appendChild(el('td',null,a));tr.appendChild(el('td','n',b));tr.appendChild(el('td','n',cdif));t.appendChild(tr);}
+    fila('pr',tienda+' (promo)','$'+thou(it.precio),'—');
+    d.proveedores.forEach(function(p){
+      fila('',p.proveedor+' · última compra '+p.ultima_compra,'$'+thou(p.precio_ultima_compra),tienda+' cuesta '+pmDif(it.precio,p.precio_ultima_compra));
+      fila('sub','Promedio ponderado · '+p.facturas+(p.facturas===1?' factura':' facturas')+' ('+p.desde+' a '+p.hasta+')','$'+thou(p.precio_promedio),tienda+' cuesta '+pmDif(it.precio,p.precio_promedio));
+    });
+    c.appendChild(t);
+    var obs=[];
+    if(it.ciudades_restringidas&&it.ciudades_restringidas.length){obs.push('Aplica solo en: '+it.ciudades_restringidas.join(', ')+'.'+(pmAplica(it.ciudades_restringidas)?'':' Tu ciudad es '+PROMO_CIUDAD+'.'));}
+    if(it.condiciones){obs.push('Condiciones: '+it.condiciones);}
+    if(it.vigencia_texto){obs.push('Vigencia: '+it.vigencia_texto);}
+    if(d.lineas_sin_presentacion>0){obs.push(d.lineas_sin_presentacion+' compras tuyas no traen presentación legible y no entraron al cálculo.');}
+    obs.push('Compara lo mismo con lo mismo: revisa que el corte, la marca y la presentación sean equivalentes.');
+    var ul=el('ul','pm-obs');obs.forEach(function(o){ul.appendChild(el('li',null,o));});c.appendChild(ul);
+    c.appendChild(el('div','pm-con '+ver.tag,ver.txt));
+    var nf=0,dsd='',hst='';d.proveedores.forEach(function(p){nf+=p.facturas;if(!dsd||p.desde<dsd){dsd=p.desde;}if(!hst||p.hasta>hst){hst=p.hasta;}});
+    c.appendChild(el('div','pm-pie','Basado en '+nf+(nf===1?' factura':' facturas')+' ('+dsd+' a '+hst+'): '+nom.join(', ')+'. Nada de esto se guardó.'));
+    M.scrollTop=M.scrollHeight;
+    try{hist.push({role:'user',content:'Analiza esta promoción: '+it.producto});hist.push({role:'assistant',content:ver.txt});histGuarda();}catch(x){}
+    if(leer){hablar(ver.txt);}
+  }
+  $('ai-foto').addEventListener('click',function(){$('ai-file').click();});
+  $('ai-file').addEventListener('change',function(ev){var f=ev.target.files&&ev.target.files[0];ev.target.value='';pmArchivo(f);});
   $('ai-f').addEventListener('submit',function(ev){ev.preventDefault();var t=$('ai-in').value;$('ai-in').value='';enviar(t);});
   /* Dictado dentro del chat */
   function pararRec(){if(rec){try{rec.onend=null;rec.onresult=null;rec.onerror=null;rec.onstart=null;rec.abort();}catch(e){}rec=null;botSt('idle');}$('ai-mic').classList.remove('rec');}
