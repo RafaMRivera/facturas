@@ -866,6 +866,8 @@ button:active{transform:scale(.97)}
 @keyframes pmblink{50%{opacity:.25}}
 #ai-mic{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .pm-lee{margin:4px 0 6px;color:var(--text)}
+.v-trz{display:none!important}
+.stps .stp b{font-weight:700}
 </style>
 </head>
 <body>
@@ -1475,7 +1477,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   var PROY='FacturaElectronica_V2';
   function pasosDe(q){var s=String(q||'').toLowerCase();var tb=['facturas'];if(/gasol|combust|producto|item|ítem|compr|precio|unitari|kilo|litro|gal[oó]n|categor/.test(s)){tb.push('ítems de factura');}if(/proveedor|tienda|almac[eé]n|donde|dónde|nit/.test(s)){tb.push('proveedores');}if(/categor|subcateg|gasolina|comida|mercado|aseo|combust/.test(s)){tb.push('catálogo de categorías');}var ot=[];if(/iva|impuesto|impoconsumo/.test(s)){ot.push('IVA e impoconsumo');}if(/promedio|unitari|precio|litro|galon|galón|kilo/.test(s)){ot.push('valor promedio y unitario');}if(!ot.length){ot.push('totales por periodo');}var mes=/mes|mensual|compar|aument|subi|baj|vari|tendenc|evoluci|vs|contra/.test(s);var qq=String(q||'').trim();if(qq.length>58){qq=qq.slice(0,56)+'…';}
     var P=['Leo tu pregunta: «'+qq+'»','Reviso lo que me has enseñado (memoria de criterio)','Abro tu cuenta de Supabase · proyecto '+PROY+' (rafaelmauricio.ra)','Reviso las tablas: '+tb.join(', ')+' · facturas desde 2026-01-01','Calculo '+ot.join(' y ')];if(mes){P.push('Comparo mes contra mes y busco qué cambió');}P.push('Verifico que ninguna factura (CUFE) se cuente dos veces');P.push('Escribo la respuesta con '+(window.__ia||'la IA'));return P;}
-  function pasosVer(box,q,cb){var P=pasosDe(q);var n=0;var tm=0;var dead=false;function rep(){if(cb&&!dead){var W=['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve'];cb('Paso '+W[n+1]+' de '+W[P.length]);}}function pinta(){box.textContent='';for(var i=Math.max(0,n-(box.closest&&box.closest('.v-think')?3:99));i<=n&&i<P.length;i++){var d=document.createElement('div');d.className='stp'+(i<n?' ok':' cur');var ic=document.createElement('b');ic.textContent=i<n?'✓':'›';d.appendChild(ic);d.appendChild(document.createTextNode(' Paso '+(i+1)+' · '+P[i]));if(i===n){var dd=document.createElement('span');dd.className='dots';dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));d.appendChild(dd);}box.appendChild(d);}rep();}
+  function pasosVer(box,q,cb){var P=pasosDe(q);var n=0;var tm=0;var dead=false;function rep(){if(cb&&!dead){var W=['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve'];cb('Paso '+W[n+1]+' de '+W[P.length]);}}function pinta(){box.textContent='';for(var i=Math.max(0,n-(box.closest&&box.closest('.v-think')?3:99));i<=n&&i<P.length;i++){var d=document.createElement('div');d.className='stp'+(i<n?' ok':' cur');var ic=document.createElement('b');ic.textContent=i<n?'✓':'›';d.appendChild(ic);d.appendChild(document.createTextNode(' '+P[i]));if(i===n){var dd=document.createElement('span');dd.className='dots';dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));dd.appendChild(document.createElement('i'));d.appendChild(dd);}box.appendChild(d);}rep();}
     pinta();tm=setInterval(function(){if(dead){clearInterval(tm);return;}if(n<P.length-1){n++;pinta();var m=document.getElementById('ai-m');if(m){m.scrollTop=m.scrollHeight;}}},1700);return function(){dead=true;clearInterval(tm);};}
   function trazaTxt(d){return '';}function trazaTxt_off(d){var z=d&&d.traza;if(!z){return '';}var p=['Supabase · '+PROY];if(z.consultas){p.push(z.consultas+(z.consultas===1?' consulta':' consultas')+' · '+z.filas+' filas');}else{p.push('sin consultar la base');}if(z.ia){p.push('IA: '+z.ia);}if(z.memoria){p.push(z.memoria+' criterios de tu memoria aplicados');}if(z.aprendido){p.push('aprendí algo nuevo');}return p.join(' · ');}
   /* Envía la pregunta; devuelve una promesa con el texto que se mostró */
@@ -1529,7 +1531,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     if(/^(hola|holi|buenas|buenos dias|buen dia|buenas tardes|buenas noches|hey|que mas|quiubo)( pau)?$/.test(s)){return 'Hola'+n+'. ¿Qué quieres revisar hoy?';}
     return '';
   }
-  var PM_VER='v5';var PM_ESPERA=60000; /* si la lectura tarda más de esto, Pau avisa en vez de quedarse pensando */
+  var PM_VER='v6';var PM_ESPERA=60000; /* si la lectura tarda más de esto, Pau avisa en vez de quedarse pensando */
   function pmTiempo(p){return new Promise(function(ok,ko){var t=setTimeout(function(){ko(new Error('La lectura tardó demasiado ('+PM_VER+(window.__pmKb?', envié '+window.__pmKb+' KB':'')+'). Revisa tu señal e intenta de nuevo con la foto más cerca del producto.'));},PM_ESPERA);p.then(function(v){clearTimeout(t);ok(v);},function(e){clearTimeout(t);ko(e);});});}
   function pmCard(){var d=el('div','msg a pm-card');M.appendChild(d);M.scrollTop=M.scrollHeight;return d;}
   function pmMotivo(d){var m=d&&d.motivo;if(m==='NO_AUTORIZADO'){return 'Tu sesión no está autorizada para usar el asistente.';}if(d&&d.detalle&&(m==='SIN_LLAVE'||m==='FORMATO'||m==='TAMANO')){return d.detalle;}return 'No pude leer la promoción. '+((d&&d.detalle)?'Detalle: '+String(d.detalle).slice(0,160):'Intenta de nuevo.');}
@@ -1548,8 +1550,11 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     var pista=$('ai-in').value.trim();$('ai-in').value='';
     var u=add('u',pista||'');
     if(f.type.indexOf('image/')===0){var th=document.createElement('img');th.className='pm-th';th.alt='Foto de la promoción';th.src=URL.createObjectURL(f);u.insertBefore(th,u.firstChild);}else{u.insertBefore(document.createTextNode('📄 '+f.name+'\n'),u.firstChild);}
-    var w=add('a','Voy a analizar la imagen…');botSt('pensando');enviando=true;
-    pmTiempo(pmPrepara(f).then(function(a){return sb.functions.invoke('promo-analizar',{body:{archivo_b64:a.b64,mime:a.mime,pista:pista}});})).then(function(r){
+    var w=add('a','');botSt('pensando');enviando=true;
+    var PS=['Preparando la imagen','Enviándola a leer','Leyendo producto, precio y cantidad'];var pn=0,pbox=el('div','stps');w.appendChild(pbox);
+    function pmPinta(){pbox.textContent='';for(var i=0;i<PS.length;i++){var d=document.createElement('div');d.className='stp'+(i<pn?' ok':(i===pn?' cur':''));if(i>pn){d.style.opacity='.45';}var ic=document.createElement('b');ic.textContent=i<pn?'✓':(i===pn?'›':'·');d.appendChild(ic);d.appendChild(document.createTextNode(' '+PS[i]));if(i===pn){var dd=document.createElement('span');dd.className='dots';for(var k=0;k<3;k++){dd.appendChild(document.createElement('i'));}d.appendChild(dd);}pbox.appendChild(d);}M.scrollTop=M.scrollHeight;}
+    function pmSet(n){pn=n;pmPinta();}pmPinta();
+    pmTiempo(pmPrepara(f).then(function(a){pmSet(1);setTimeout(function(){if(pn===1){pmSet(2);}},900);return sb.functions.invoke('promo-analizar',{body:{archivo_b64:a.b64,mime:a.mime,pista:pista}});})).then(function(r){
       enviando=false;botSt('idle');try{w.remove();}catch(x){}
       var d=r.data;if(r.error||!d){add('s','No pude conectar con la lectura de promociones. Revisa tu conexión e intenta de nuevo.');return;}
       if(!d.ok){add('s',pmMotivo(d));return;}
@@ -1670,7 +1675,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   function dicFin(S){if(dic!==S){return;}dic=null;dicLock=false;dicDown=false;clearInterval(dicTm);dicUi(false,false);var tx=$('ai-in').value.trim();
     if(S.err){add('s','El navegador bloqueó el micrófono. Dale permiso en el candado de la barra de direcciones.');}
     else if(!tx){add('s','No te escuché. Mantén presionado el micrófono y habla.');}
-    else{leer=true;$('ai-spk').classList.add('act');try{$('ai-in').focus();}catch(e){}}}
+    else{leer=true;$('ai-spk').classList.add('act');$('ai-in').value='';enviar(tx);}}
   (function(){
     var mic=$('ai-mic');mic.style.touchAction='none';
     mic.addEventListener('contextmenu',function(e){e.preventDefault();});
