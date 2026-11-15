@@ -1680,8 +1680,35 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
     lanza();dicT0=Date.now();clearInterval(dicTm);dicTm=setInterval(dicTiempo,500);dicTiempo();dicUi(true,false);
   }
   function dicParar(){var S=dic;if(!S){return;}S.vivo=false;try{if(S.r){S.r.stop();}}catch(e){}setTimeout(function(){if(dic===S){dicFin(S);}},900);}
+  /* Ayuda cuando el micrófono está bloqueado: botón para habilitarlo y pasos exactos si Chrome lo tiene negado */
+  function micAyuda(){
+    var hr=M.querySelector('.ai-hero');if(hr){hr.remove();}
+    var c=el('div','msg a pm-card');M.appendChild(c);
+    c.appendChild(el('div','pm-h','El micrófono está bloqueado'));
+    var info=el('div','pm-s','Pau necesita permiso para escucharte. Toca el botón y, si Chrome te pregunta, elige «Permitir».');c.appendChild(info);
+    var msg=el('div','pm-s','');
+    var instalada=false;try{instalada=!!(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;}catch(e){}
+    function pasos(){
+      info.textContent=(instalada?'El celular tiene el micrófono negado para esta app':'Chrome tiene el micrófono negado para esta página')+' y la app no puede cambiarlo sola. Hazlo así:';
+      msg.textContent='';var ul=el('ul','pm-obs');
+      (instalada?['Sal de la app y mantén presionado su ícono en la pantalla del celular.','Toca «Información de la app» (el ⓘ).','Permisos → Micrófono → «Permitir solo mientras se usa la app».','Vuelve a la app y toca «Ya lo habilité».','Si no aparece ahí: Ajustes del celular → Aplicaciones → Chrome → Permisos → Micrófono → Permitir.']:['Toca ⋮ (arriba a la derecha en Chrome) → Configuración.','Configuración de sitios → Micrófono.','Busca rafamrivera.github.io → Permitir.','Vuelve aquí y toca «Ya lo habilité».','Si sigue igual: Ajustes del celular → Aplicaciones → Chrome → Permisos → Micrófono → «Permitir solo mientras se usa la app».']).forEach(function(t){ul.appendChild(el('li',null,t));});
+      c.insertBefore(ul,msg);b2.classList.remove('hide');b1.textContent='Probar de nuevo';}
+    function prueba(){
+      msg.textContent='Probando…';
+      if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){msg.textContent='Este navegador no permite usar el micrófono. Ábrelo en Chrome.';return;}
+      navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){try{st.getTracks().forEach(function(t){t.stop();});}catch(e){}
+        msg.textContent='Listo, el micrófono quedó habilitado. Mantén presionado el micrófono y habla.';b1.classList.add('hide');b2.classList.add('hide');})
+      .catch(function(e){var n=e&&e.name;
+        if(n==='NotReadableError'||n==='AbortError'){msg.textContent='Otra aplicación está usando el micrófono. Ciérrala (llamada, grabadora, WhatsApp) y prueba de nuevo.';}
+        else if(n==='NotFoundError'){msg.textContent='No encuentro un micrófono en este celular.';}
+        else{msg.textContent='';pasos();}});}
+    var b1=el('button','pm-b pri pm-li','Habilitar micrófono');b1.type='button';b1.addEventListener('click',prueba);
+    var b2=el('button','pm-b pm-li hide','Ya lo habilité');b2.type='button';b2.addEventListener('click',prueba);
+    c.appendChild(b1);c.appendChild(b2);c.appendChild(msg);M.scrollTop=M.scrollHeight;
+    try{if(navigator.permissions&&navigator.permissions.query){navigator.permissions.query({name:'microphone'}).then(function(r){if(r.state==='denied'){pasos();}}).catch(function(){});}}catch(e){}
+  }
   function dicFin(S){if(dic!==S){return;}dic=null;dicLock=false;dicDown=false;clearInterval(dicTm);dicUi(false,false);var tx=$('ai-in').value.trim();
-    if(S.err){add('s','El navegador bloqueó el micrófono. Dale permiso en el candado de la barra de direcciones.');}
+    if(S.err){micAyuda();}
     else if(!tx){add('s','No te escuché. Mantén presionado el micrófono y habla.');}
     else{leer=true;$('ai-spk').classList.add('act');$('ai-in').value='';enviar(tx);}}
   (function(){
