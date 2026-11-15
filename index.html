@@ -868,6 +868,14 @@ button:active{transform:scale(.97)}
 .pm-lee{margin:4px 0 6px;color:var(--text)}
 .v-trz{display:none!important}
 .stps .stp b{font-weight:700}
+
+.bio-ov{position:fixed;inset:0;z-index:99999;background:var(--bg,#08140d);align-items:center;justify-content:center;padding:24px}
+.bio-c{max-width:340px;width:100%;text-align:center;color:var(--text,#e8f5ec)}
+.bio-i{font-size:44px;margin-bottom:10px}.bio-t{font-size:20px;font-weight:700;margin-bottom:8px}.bio-s{font-size:14px;opacity:.8;margin-bottom:20px;line-height:1.45}
+.bio-b{width:100%;min-height:48px;border-radius:14px;border:0;background:var(--brand,#2fbf71);color:#04210F;font-weight:700;font-size:15px;cursor:pointer}
+.bio-l{margin-top:12px;background:none;border:0;color:inherit;opacity:.8;text-decoration:underline;font-size:13px;cursor:pointer;padding:8px}
+.bio-m{margin-top:12px;font-size:12.5px;min-height:16px;opacity:.85}
+.stp{flex-wrap:nowrap!important;align-items:flex-start!important}
 </style>
 </head>
 <body>
@@ -1081,7 +1089,7 @@ button:active{transform:scale(.97)}
   <div class="v-st" id="v-st">Te escucho</div>
   <div class="v-tx" id="v-tx"></div>
   <div class="v-think" id="v-think"><span class="vt-t"></span><span class="dots"><i></i><i></i><i></i></span></div><div class="v-trz" id="v-trz"></div>
-  <button class="v-tap hide" id="v-tap">Tocar para hablar</button><button class="v-tap hide" id="v-send" type="button">Listo, responde</button>
+  <button class="v-tap hide" id="v-tap">Tocar para hablar</button>
   <canvas id="v-wave"></canvas>
 </div>
 </div>
@@ -1723,7 +1731,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
      Para responder ya: toca «Listo, responde» o termina diciendo «listo Pau», «eso es todo» o «responde». */
   var PAUSA_VOZ_SEG=15,SIN_HABLA_SEG=8,vPausa=null;
   var FIN_VOZ=/\s+(listo,? pau|eso es todo|ya termin[eé]|responde(,? pau)?|resp[oó]ndeme|env[ií]alo)\s*[.!]?\s*$/i;
-  function vEnviaMuestra(on){var b=$('v-send');if(b){b.classList.toggle('hide',!on);}}
+  function vEnviaMuestra(on){}
   function oirPausa(onParcial,onFinal,onFin){
     if(!SR){onFin('nosr');return null;}
     pararRec();
@@ -1948,9 +1956,58 @@ try{if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEve
   function act(){last=Date.now();}
   ['pointerdown','touchstart','touchmove','keydown','wheel','scroll','click'].forEach(function(e){window.addEventListener(e,act,{passive:true,capture:true});});
   function ocupado(){if(Date.now()<(window.__camHasta||0)){return true;}var V=document.getElementById('ai-voice');if(V&&V.classList.contains('on')){return true;}try{if(window.speechSynthesis&&speechSynthesis.speaking){return true;}}catch(e){}var a=document.querySelectorAll('audio');for(var i=0;i<a.length;i++){if(!a[i].paused){return true;}}return !!document.querySelector('.bot[data-st=pensando],.bot[data-st=hablando]');}
-  function revisa(){if(!uid){last=Date.now();return;}if(ocupado()){last=Date.now();return;}if(Date.now()-last>LOCK_SEG*1000){last=Date.now();bloqueado=true;sb.auth.signOut().then(function(){setMode('in');view('v-login');amsg('Sesión bloqueada por inactividad ('+LOCK_SEG+' s). Ingresa de nuevo para continuar.');});}}
+  function revisa(){if(!uid){last=Date.now();return;}if(ocupado()){last=Date.now();return;}if(Date.now()-last>LOCK_SEG*1000){last=Date.now();if(window.__bioBloquea&&window.__bioBloquea()){return;}bloqueado=true;sb.auth.signOut().then(function(){setMode('in');view('v-login');amsg('Sesión bloqueada por inactividad ('+LOCK_SEG+' s). Ingresa de nuevo para continuar.');});}}
   setInterval(revisa,1000);
   document.addEventListener('visibilitychange',function(){if(!document.hidden){revisa();}});
+})();
+
+/* Desbloqueo con huella: tras la inactividad, en vez de cerrar la sesión, tapa la app y pide la huella (o el PIN del celular). */
+(function(){
+  var K='af_bio_id',KA='af_bio_pedido';
+  var ok=!!(window.PublicKeyCredential&&navigator.credentials&&window.isSecureContext);
+  function lee(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function guarda(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  function aB64(buf){var b=new Uint8Array(buf),s='';for(var i=0;i<b.length;i++){s+=String.fromCharCode(b[i]);}return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+  function deB64(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4){s+='=';}var r=atob(s),b=new Uint8Array(r.length);for(var i=0;i<r.length;i++){b[i]=r.charCodeAt(i);}return b;}
+  function azar(n){var b=new Uint8Array(n);(window.crypto||{getRandomValues:function(x){for(var i=0;i<x.length;i++){x[i]=Math.floor(Math.random()*256);}}}).getRandomValues(b);return b;}
+  var ov=document.createElement('div');ov.id='bio-ov';ov.className='bio-ov';ov.style.display='none';
+  ov.innerHTML='<div class="bio-c"><div class="bio-i">🔒</div><div class="bio-t" id="bio-t"></div><div class="bio-s" id="bio-s"></div><button type="button" class="bio-b" id="bio-go"></button><button type="button" class="bio-l" id="bio-alt"></button><div class="bio-m" id="bio-m"></div></div>';
+  document.body.appendChild(ov);
+  var modo='',locked=false;
+  function $b(i){return document.getElementById(i);}
+  function muestra(m){modo=m;ov.style.display='flex';$b('bio-m').textContent='';
+    if(m==='lock'){$b('bio-t').textContent='Pau está bloqueada';$b('bio-s').textContent='Pasó un rato sin usarla. Confirma que eres tú con tu huella.';$b('bio-go').textContent='Desbloquear con huella';$b('bio-alt').textContent='Usar correo y contraseña';}
+    else{$b('bio-t').textContent='¿Activar el desbloqueo con huella?';$b('bio-s').textContent='Así, cuando la app se bloquee por inactividad, entras con tu huella sin escribir el correo ni la contraseña.';$b('bio-go').textContent='Activar con mi huella';$b('bio-alt').textContent='Ahora no';}}
+  function oculta(){ov.style.display='none';modo='';locked=false;try{window.dispatchEvent(new Event('pointerdown'));}catch(e){}}
+  function desbloquear(){
+    var id=lee(K);if(!id){oculta();return;}
+    $b('bio-m').textContent='Esperando tu huella…';
+    navigator.credentials.get({publicKey:{challenge:azar(32),allowCredentials:[{type:'public-key',id:deB64(id)}],userVerification:'required',timeout:60000}})
+      .then(function(){oculta();})
+      .catch(function(){$b('bio-m').textContent='No pude confirmar tu huella. Toca el botón para intentar de nuevo.';});
+  }
+  function activar(){
+    $b('bio-m').textContent='Esperando tu huella…';
+    navigator.credentials.create({publicKey:{challenge:azar(32),rp:{name:'FinCash',id:location.hostname},user:{id:azar(16),name:'usuario',displayName:'Usuario'},
+      pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'discouraged'},timeout:60000}})
+      .then(function(c){guarda(K,aB64(c.rawId));guarda(KA,'1');oculta();})
+      .catch(function(){$b('bio-m').textContent='No se pudo activar. Puedes intentarlo de nuevo o tocar «Ahora no».';});
+  }
+  function usarClave(){oculta();bloqueado=true;sb.auth.signOut().then(function(){setMode('in');view('v-login');amsg('Ingresa con tu correo y contraseña para continuar.');});}
+  $b('bio-go').addEventListener('click',function(){if(modo==='lock'){desbloquear();}else if(modo==='ask'){activar();}});
+  $b('bio-alt').addEventListener('click',function(){if(modo==='lock'){usarClave();}else{guarda(KA,'1');oculta();}});
+  /* Lo llama el bloqueo por inactividad: true = quedó bloqueada con huella (no cierra sesión) */
+  window.__bioBloquea=function(){
+    if(!ok||!lee(K)||!uid){return false;}
+    if(locked){return true;}
+    locked=true;muestra('lock');setTimeout(function(){if(locked&&modo==='lock'){desbloquear();}},350);return true;};
+  /* Ofrece activar la huella una sola vez, después de ingresar */
+  var pedido=false;
+  setInterval(function(){if(pedido||!ok||!uid||lee(K)||lee(KA)){return;}if(ov.style.display!=='none'){return;}
+    var V=document.getElementById('ai-voice');if(V&&V.classList.contains('on')){return;}
+    pedido=true;
+    try{PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(function(s){if(s){muestra('ask');}else{guarda(KA,'1');}}).catch(function(){});}catch(e){}
+  },4000);
 })();
 
 /* Lectura: solo lo relevante, máximo 5 por tipo; con un ítem filtrado, solo lo que le afecta */
