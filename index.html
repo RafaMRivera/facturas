@@ -1768,6 +1768,9 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
      Para responder ya: toca «Listo, responde» o termina diciendo «listo Pau», «eso es todo» o «responde». */
   var PAUSA_VOZ_SEG=7,SIN_HABLA_SEG=8,vPausa=null;
   var FIN_VOZ=/\s+(listo,? pau|eso es todo|ya termin[eé]|responde(,? pau)?|resp[oó]ndeme|env[ií]alo)\s*[.!]?\s*$/i;
+  /* Cuánto esperar en silencio según cómo suena la frase: cerrada (?, .) responde pronto; cortada a medias ("…y la", "…de") espera más */
+  var CORTADA=/^(y|e|o|u|que|de|del|el|la|los|las|un|una|unos|unas|en|con|para|por|pero|a|al|mi|tu|su|me|te|se|si|como|cuando|donde|entre|sobre|sin|hasta|desde|mas|más)$/;
+  function esperaSeg(t){var w=String(t||'').trim();if(/[?!.]$/.test(w)){return Math.max(PAUSA_VOZ_SEG*0.4,1);}var u=w.toLowerCase().replace(/[,;:]+$/,'').split(/\s+/).pop();if(CORTADA.test(u)){return PAUSA_VOZ_SEG*1.6;}return PAUSA_VOZ_SEG;}
   function vEnviaMuestra(on){}
   function oirPausa(onParcial,onFinal,onFin){
     if(!SR){onFin('nosr');return null;}
@@ -1780,7 +1783,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
       if(r){try{r.onend=null;r.onresult=null;r.onerror=null;r.abort();}catch(e){}}
       botSt('idle');var t=todo().replace(FIN_VOZ,'').trim();if(t){onFinal(t);}else{onFin('vacio');}
     };
-    function arma(){clearTimeout(S.tm);S.tm=setTimeout(function(){if(S.fin||rec!==S.r){return;}S.cierra();},(todo()?PAUSA_VOZ_SEG:SIN_HABLA_SEG)*1000);}
+    function arma(){clearTimeout(S.tm);S.tm=setTimeout(function(){if(S.fin||rec!==S.r){return;}S.cierra();},(todo()?esperaSeg(todo()):SIN_HABLA_SEG)*1000);}
     function lanza(){
       var r=new SR();S.r=r;rec=r;r.lang='es-CO';r.interimResults=true;r.continuous=true;r.maxAlternatives=1;
       r.onresult=function(e){ampT=0.55;S.cur=unirRes2(e.results);var t=todo();onParcial(t);vEnviaMuestra(!!t);arma();
@@ -1804,7 +1807,7 @@ sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){
   V.addEventListener('pointerdown',function(ev){if(!(ev.target.closest&&ev.target.closest('button'))){ev.preventDefault();}});V.addEventListener('click',function(ev){if(!(ev.target.closest&&ev.target.closest('button'))){ev.stopPropagation();ev.preventDefault();}});
   $('ai-vmode').addEventListener('click',vAbrir);$('v-x').addEventListener('click',vCerrar);$('v-tap').addEventListener('click',function(){if(vNeedMic){pedirMic().then(function(r){if(r==='ok'){vNeedMic=false;$('v-tap').textContent='Tocar para hablar';$('v-tap').classList.add('hide');vEscucha();}else{sinMic();}});return;}vEscucha();});
   var muteT=0;['pointerdown','touchstart','mousedown'].forEach(function(n){$('v-mute').addEventListener(n,function(ev){ev.stopPropagation();});});
-  $('v-mute').addEventListener('click',function(ev){ev.stopPropagation();ev.preventDefault();var nw=Date.now();if(nw-muteT<450){return;}muteT=nw;vMute=!vMute;vMuteUi();var st=V.getAttribute('data-st');
+  $('v-mute').addEventListener('click',function(ev){ev.stopPropagation();ev.preventDefault();var nw=Date.now();if(nw-muteT<450){return;}muteT=nw;if(!vMute&&V.getAttribute('data-st')==='escuchando'&&vPausa){var tp=$('v-tx').textContent.trim();if(tp&&palabras(tp).length){try{vPausa.cierra();}catch(e){}}}vMute=!vMute;vMuteUi();var st=V.getAttribute('data-st');
     /* Silenciar SOLO apaga el micrófono: no toca la consulta en curso ni lo que Pau está diciendo */
     if(vMute){pararRec();bargeOff();if(st==='escuchando'||st==='pausa'){est('pausa','Micrófono en silencio');var tm=$('v-tx');if(!tm.textContent.trim()||st==='escuchando'){tm.className='v-tx';tm.textContent='Silenciado. Toca el micrófono para volver a hablar.';}}}
     else{if(st==='hablando'){bargeOn($('v-tx').textContent);}else if(st==='pausa'&&!enviando){vEscucha();}}});
