@@ -2010,6 +2010,28 @@ try{if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEve
   },4000);
 })();
 
+/* Pantalla encendida mientras Pau habla, piensa o está en modo voz (evita que el celular se apague a los 30 s y se pierda la conversación) */
+(function(){
+  var wl=null,pidiendo=false;
+  function activo(){
+    var V=document.getElementById('ai-voice');if(V&&V.classList.contains('on')){return true;}
+    try{if(window.speechSynthesis&&speechSynthesis.speaking){return true;}}catch(e){}
+    var a=document.querySelectorAll('audio');for(var i=0;i<a.length;i++){if(!a[i].paused){return true;}}
+    if(document.querySelector('.bot[data-st=pensando],.bot[data-st=hablando],.bot[data-st=escuchando]')){return true;}
+    return Date.now()<(window.__camHasta||0);
+  }
+  function pide(){
+    if(wl||pidiendo||document.hidden||!navigator.wakeLock||!navigator.wakeLock.request){return;}
+    pidiendo=true;
+    navigator.wakeLock.request('screen').then(function(l){pidiendo=false;wl=l;window.__wakeOn=true;l.addEventListener('release',function(){if(wl===l){wl=null;}window.__wakeOn=false;});}).catch(function(){pidiendo=false;});
+  }
+  function suelta(){if(wl){var l=wl;wl=null;window.__wakeOn=false;try{l.release();}catch(e){}}}
+  function revisa(){if(activo()){pide();}else{suelta();}}
+  setInterval(revisa,1500);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden){revisa();}});
+  ['pointerdown','click'].forEach(function(e){document.addEventListener(e,function(){if(activo()){pide();}},true);});
+})();
+
 /* Lectura: solo lo relevante, máximo 5 por tipo; con un ítem filtrado, solo lo que le afecta */
 (function(){
   var RELEV={'PRECIOS':100,'CONSUMO':95,'TENDENCIA':90,'AHORRO':85,'COMPRAS':80,'ACCIONES':70,'DATOS':55,'PROVEEDORES':50,'IMPUESTOS':35,'NOTAS CRÉDITO':35};
