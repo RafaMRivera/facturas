@@ -803,7 +803,7 @@ th:first-child,td:first-child{text-align:left}
   #sec1 .sub2:after{content:' · Desliza →'}
   /* Punto 3: flujo con desplazamiento horizontal, sin achicarse */
   #chart-wf{overflow:visible}
-  #t-wf:after{content:'Desliza el gráfico a los lados para verlo completo →';display:block;font-size:11px;font-weight:700;color:var(--brand);margin-top:4px}
+  #t-wf:after{content:'Pellizca con los dedos para acercar o alejar, y desliza para moverte →';display:block;font-size:11px;font-weight:700;color:var(--brand);margin-top:4px}
   #t-mes:after{content:'Desliza el gráfico a los lados →';display:block;font-size:11px;font-weight:700;color:var(--brand);margin-top:4px}
   /* Tablas Top 5: encabezado alineado con las filas */
   .cols3.zvt .lane.on>div[id^=col-]{grid-template-columns:1fr!important}
@@ -818,6 +818,12 @@ th:first-child,td:first-child{text-align:left}
   .tw{overscroll-behavior-x:contain}
   .ai-m{overscroll-behavior:contain}
 }
+
+.zvsc{overflow:auto!important;max-height:min(78vh,620px);touch-action:pan-x pan-y}
+.zvz{position:absolute;top:2px;right:2px;display:flex;gap:6px;z-index:3}
+.zvz button{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--head);font:700 18px/1 var(--sans,inherit);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.zvz button:active{background:var(--soft2)}
+#chart-wf{position:relative}
 </style>
 </head>
 <body>
@@ -1246,7 +1252,7 @@ function renderWFk(){var host=$('chart-wf');if(!host){return;}var k=rowsOf('kpis
   var span=W-mr-nw-6,xs=[4,4+span*0.34,4+span*0.67,4+span];
   var yC0=mt+90,yN=mt+30,yNt=yN+h(val)+gp,yS=mt+75,yI=yS+h(sub)+gp,yB=mt,yG=yB+h(bas)+(nr?26:22),yV=Math.max(yI,yG+h(nog)/2+(nr?44:50)-h(iva)/2),yC=yV+h(iva)/2+(nr?44:50)-h(inc)/2;
   var H=Math.max(yNt+h(nt),yI+h(imp),yG+h(nog),yC+h(inc),yC0+Hn)+22;
-  var svg=zvNS(null,'svg',{width:W,height:H,role:'img','aria-label':'Flujo del gasto: compras brutas '+pm(comp)+', notas crédito '+pm(-nt)+', gasto neto '+pm(val)+', impuestos '+pm(imp)+', base gravable '+pm(bas)+' y valor sin impuesto '+pm(nog)});var sc=document.createElement('div');sc.className='zvsc';sc.appendChild(svg);host.appendChild(sc);
+  var svg=zvNS(null,'svg',{width:W,height:H,role:'img','aria-label':'Flujo del gasto: compras brutas '+pm(comp)+', notas crédito '+pm(-nt)+', gasto neto '+pm(val)+', impuestos '+pm(imp)+', base gravable '+pm(bas)+' y valor sin impuesto '+pm(nog)});svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.setAttribute('data-w',W);svg.setAttribute('data-h',H);var sc=document.createElement('div');sc.className='zvsc';sc.appendChild(svg);host.appendChild(sc);zvZoomInit(sc,host);
   function band(a,sy,b,ty,t,col,op){var x0=xs[a]+nw,x1=xs[b],xm=(x0+x1)/2;zvNS(svg,'path',{d:'M'+x0+' '+sy+'C'+xm+' '+sy+','+xm+' '+ty+','+x1+' '+ty+'L'+x1+' '+(ty+t)+'C'+xm+' '+(ty+t)+','+xm+' '+(sy+t)+','+x0+' '+(sy+t)+'Z',fill:col,opacity:op||0.4});}
   band(0,yC0,1,yN,h(val),CG,0.4);band(0,yC0+h(val),1,yNt,h(nt),CR,0.5);band(1,yN,2,yS,h(sub),CG,0.4);band(1,yN+h(sub),2,yI,h(imp),CO,0.45);band(2,yS,3,yB,h(bas),CG,0.4);band(2,yS+h(bas),3,yG,h(nog),CN,0.35);band(2,yI,3,yV,h(iva),CO,0.45);band(2,yI+h(iva),3,yC,h(inc),CO,0.55);
   var ND=[{k:'cuadre',l:'Compras brutas',s:'Compras',v:comp,c:0,y:yC0,t:CK,p:null},{k:'cuadre',l:'Gasto neto',s:'Gasto neto',v:val,c:1,y:yN,t:CG,p:val/comp*100,pl:'de las compras'},{k:'notas',l:'Notas crédito',s:'Notas',v:nt,c:1,y:yNt,t:CR,p:nt/comp*100,pl:'de las compras'},{k:'subtotal',l:'Subtotal antes de impuestos',s:'Antes de imp.',v:sub,c:2,y:yS,t:CG,p:sub/val*100,pl:'del gasto neto'},{k:'impuestos',l:'Impuestos (IVA + INC)',s:'Impuestos',v:imp,c:2,y:yI,t:CO,p:imp/val*100,pl:'del gasto neto'},{k:'base',l:'Base gravable',s:'Base gravable',v:bas,c:3,y:yB,t:CG,p:bas/val*100,pl:'del gasto neto'},{k:'sinimp',l:'Valor sin impuesto',s:'Sin impuesto',v:nog,c:3,y:yG,t:CN,p:nog/val*100,pl:'del gasto neto'},{k:'iva',l:'IVA',s:'IVA',v:iva,c:3,y:yV,t:CO,p:iva/val*100,pl:'del gasto neto'},{k:'inc',l:'INC (impoconsumo)',s:'INC',v:inc,c:3,y:yC,t:CO,p:inc/val*100,pl:'del gasto neto'}];
@@ -1290,6 +1296,16 @@ function renderCat(){var host=$('cat-list');host.textContent='';var d=rowsOf('ca
   top.forEach(catRow);
   if(rest.length){host.appendChild(zvRow({name:'Otros ('+rest.length+' categorías)',v:restV,mx:mx,sh:restV/tot*100,fc:'o'}));var sc=c.categoria&&!zvCatAll?rest.filter(function(x){return x.categoria===c.categoria;})[0]:null;if(sc){catRow(sc);}}
   if(cats.length>N){host.appendChild(zvBtn(zvCatAll?'Mostrar solo el Top 5':'Ver las '+cats.length+' categorías',function(){zvCatAll=!zvCatAll;renderCat();}));}host.className=zvCatAll?'scrollbox':'';}
+
+/* Zoom del flujo: pellizco con los dedos y botones + / − (solo vista) */
+var zvZoom=1;
+function zvZoomApply(sc){var sv=sc.querySelector('svg');if(!sv){return;}sv.style.width=(Number(sv.getAttribute('data-w'))*zvZoom)+'px';sv.style.height=(Number(sv.getAttribute('data-h'))*zvZoom)+'px';}
+function zvZoomSet(sc,z,mx,my){z=Math.min(3,Math.max(.6,z));if(z===zvZoom){return;}var r=sc.getBoundingClientRect(),k=z/zvZoom;var ax=(mx===undefined?r.width/2:mx-r.left),ay=(my===undefined?r.height/2:my-r.top);var cx=sc.scrollLeft+ax,cy=sc.scrollTop+ay;zvZoom=z;zvZoomApply(sc);sc.scrollLeft=cx*k-ax;sc.scrollTop=cy*k-ay;}
+function zvZoomInit(sc,host){zvZoomApply(sc);var bx=el('div','zvz');[['+','Acercar',function(){zvZoomSet(sc,zvZoom*1.25);}],['−','Alejar',function(){zvZoomSet(sc,zvZoom/1.25);}],['↺','Tamaño original',function(){zvZoomSet(sc,1);sc.scrollLeft=0;sc.scrollTop=0;}]].forEach(function(b){var e=el('button',null,b[0]);e.type='button';e.setAttribute('aria-label',b[1]);e.title=b[1];e.addEventListener('click',b[2]);bx.appendChild(e);});host.appendChild(bx);
+  var d0=0,z0=1;function dist(t){var a=t[0],b=t[1];return Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);}
+  sc.addEventListener('touchstart',function(e){if(e.touches.length===2){d0=dist(e.touches);z0=zvZoom;}},{passive:true});
+  sc.addEventListener('touchmove',function(e){if(e.touches.length===2&&d0){e.preventDefault();var t=e.touches;zvZoomSet(sc,z0*dist(t)/d0,(t[0].clientX+t[1].clientX)/2,(t[0].clientY+t[1].clientY)/2);}},{passive:false});
+  sc.addEventListener('touchend',function(e){if(e.touches.length<2){d0=0;}});}
 function renderV3(){try{renderKpiRefs();}catch(e){console.error(e);}try{renderWFk();}catch(e){console.error(e);}try{zvCounts();}catch(e){console.error(e);}}
 function renderImp(){var tb=$('b-imp');tb.textContent='';var d=rowsOf('impuestos');if(!d){return;}d.forEach(function(x){var tr=document.createElement('tr');[x.tipo_impuesto,pct2(x.tarifa),x.items,pesos(x.base),pesos(x.valor)].forEach(function(v){tr.appendChild(el('td',null,String(v)));});tb.appendChild(tr);});}
 function dotc(id,col){var e=$(id);if(e){e.style.background=col;}}
