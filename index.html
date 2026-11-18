@@ -777,6 +777,18 @@ th:first-child,td:first-child{text-align:left}
 .bot.mini i,.bot.mini u{display:none!important}
 .jv u{inset:10px!important;background:var(--pau) 50% 22%/cover no-repeat!important;border:2px solid #4ADE80;box-shadow:0 0 12px rgba(74,222,128,.6);animation:none!important}
 .jv .r2,.jv .r3{display:none}
+
+/* Foto de Pau en el encabezado, en las respuestas y en la pantalla de voz (solo apariencia) */
+.pau-hd{width:36px;height:36px;flex:none;border-radius:50%;background:var(--pau) 50% 22%/cover no-repeat;border:2px solid #4ADE80;box-shadow:0 0 12px rgba(74,222,128,.5);margin-right:10px}
+.ai-h{align-items:center}
+.msg.a{position:relative;margin-left:42px;max-width:calc(88% - 42px)}
+.msg.a:before{content:'';position:absolute;left:-45px;top:0;width:32px;height:32px;border-radius:50%;background:var(--pau) 50% 22%/cover no-repeat;border:2px solid #4ADE80;box-shadow:0 0 10px rgba(74,222,128,.45)}
+.pau-av{position:absolute;left:50%;top:47%;width:min(40vw,190px);height:min(40vw,190px);translate:-50% -50%;border-radius:50%;background:var(--pau) 50% 22%/cover no-repeat;border:2px solid rgba(74,222,128,.85);box-shadow:0 0 0 9px rgba(74,222,128,.12),0 0 60px rgba(74,222,128,.45);pointer-events:none;z-index:1;animation:orbp 3.2s ease-in-out infinite}
+.pau-av:before{content:'';position:absolute;inset:-16px;border-radius:50%;border:2px solid transparent;border-top-color:#4ADE80;border-right-color:rgba(74,222,128,.3);animation:jvs 3.4s linear infinite}
+#ai-voice[data-st=escuchando] .pau-av{box-shadow:0 0 0 9px rgba(74,222,128,.22),0 0 80px rgba(74,222,128,.6)}
+#ai-voice[data-st=hablando] .pau-av{animation:orbt .45s ease-in-out infinite alternate}
+#ai-voice[data-st=pensando] .pau-av{filter:saturate(.75)}
+@media(max-height:560px){.pau-av{top:40%;width:110px;height:110px}}
 </style>
 </head>
 <body>
@@ -922,7 +934,7 @@ th:first-child,td:first-child{text-align:left}
 </nav>
 <button id="ai-fab" title="Pau, tu asistente" aria-label="Abrir a Pau, tu asistente"><span class="jv"><i class="r0"></i><i class="r1"></i><i class="r2"></i><i class="r3"></i><u></u></span></button>
 <div id="ai-panel" role="dialog" aria-label="Pau, asistente financiera">
-  <div class="ai-h"><div><small id="ai-st"><em></em>En línea</small></div><span class="sp"></span>
+  <div class="ai-h"><span class="pau-hd" aria-hidden="true"></span><div><small id="ai-st"><em></em>En línea</small></div><span class="sp"></span>
     <button class="ring" id="ai-ring" title="Ver consumo" aria-label="Ver consumo"><svg viewBox="0 0 36 36"><circle class="bg" cx="18" cy="18" r="15"/><circle class="fg" id="ai-ring-fg" cx="18" cy="18" r="15" stroke-dasharray="94.25" stroke-dashoffset="94.25"/></svg><span id="ai-ring-t">–</span></button>
     <button class="ai-ib cfb" id="ai-back" title="Volver al chat de texto" aria-label="Volver al chat de texto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></button>
     <button class="ai-ib cfb" id="ai-tovoice" title="Ir al chat de voz" aria-label="Ir al chat de voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></svg></button>
@@ -966,6 +978,7 @@ th:first-child,td:first-child{text-align:left}
   <form class="ai-f" id="ai-f"><button class="ai-ib" id="ai-mic" type="button" title="Dictar" aria-label="Dictar la pregunta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><input id="ai-in" type="text" placeholder="Pregúntale a Pau…" autocomplete="off" maxlength="500"><button class="ai-ib" id="ai-spk" title="Leer las respuestas en voz alta" aria-label="Leer las respuestas en voz alta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.500 8.500a5 5 0 0 1 0 7"/></svg></button><button class="ai-ib wv" id="ai-vmode" title="Hablar con Pau" aria-label="Modo voz"><span></span><span></span><span></span><span></span><span></span></button><button class="ai-ib act" type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
 </div>
 <div id="ai-voice" data-st="escuchando" role="dialog" aria-label="Conversación por voz">
+  <div class="pau-av" aria-hidden="true"></div>
   <button class="v-mb" id="v-mute" aria-label="Silenciar micrófono" aria-pressed="false"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/><path class="sl" d="M4 4l16 16"/></svg></button>
   <button class="v-bt" id="v-x">Terminar</button>
   <div class="orb v-orb"><svg class="v-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><svg class="v-dot" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="19" cy="12" r="2.2"/></svg><svg class="v-spk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 10v4M8 6v12M12 3v18M16 7v10M20 10v4"/></svg></div>
