@@ -789,6 +789,35 @@ th:first-child,td:first-child{text-align:left}
 #ai-voice[data-st=hablando] .pau-av{animation:orbt .45s ease-in-out infinite alternate}
 #ai-voice[data-st=pensando] .pau-av{filter:saturate(.75)}
 @media(max-height:560px){.pau-av{top:40%;width:110px;height:110px}}
+
+/* ===== Móvil (celular / app instalada) ===== */
+.zvsc{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;padding-bottom:6px}
+.zvsc svg{display:block;max-width:none}
+@media(max-width:700px){
+  html,body{max-width:100%;overflow-x:hidden}
+  /* Punto 1: tarjetas del mismo tamaño, en una fila que se desliza */
+  .kpis,.kpis.k5{display:flex!important;flex-wrap:nowrap;gap:10px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;margin:0 -8px;padding:2px 8px 10px;scroll-padding:0 8px}
+  .kpis .card,.kpis .card:last-child:nth-child(odd),.kpis .hero{flex:0 0 min(66vw,248px);width:min(66vw,248px);min-width:0;grid-column:auto;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:flex-start}
+  .kpis .card .zvk{margin-top:auto}
+  .kpis::-webkit-scrollbar{height:0}
+  #sec1 .sub2:after{content:' · Desliza →'}
+  /* Punto 3: flujo con desplazamiento horizontal, sin achicarse */
+  #chart-wf{overflow:visible}
+  #t-wf:after{content:'Desliza el gráfico a los lados para verlo completo →';display:block;font-size:11px;font-weight:700;color:var(--brand);margin-top:4px}
+  #t-mes:after{content:'Desliza el gráfico a los lados →';display:block;font-size:11px;font-weight:700;color:var(--brand);margin-top:4px}
+  /* Tablas Top 5: encabezado alineado con las filas */
+  .cols3.zvt .lane.on>div[id^=col-]{grid-template-columns:1fr!important}
+  .zvp.h>div:nth-child(2){display:none}
+  .zvp.h{padding-top:4px;padding-bottom:4px}
+  .zvp .v{font-size:12px}
+  .zvch .zvd{white-space:normal}
+  /* Toques cómodos y sin zoom automático en iPhone */
+  button,.btn,.chip,#b-theme,#b-ref{min-height:40px}
+  input,select,textarea{font-size:16px!important}
+  .zvtb{min-height:48px}
+  .tw{overscroll-behavior-x:contain}
+  .ai-m{overscroll-behavior:contain}
+}
 </style>
 </head>
 <body>
@@ -1213,11 +1242,11 @@ function renderWFk(){var host=$('chart-wf');if(!host){return;}var k=rowsOf('kpis
   ptl('t-wf','Compras con factura electrónica','Flujo del gasto: de compras brutas a base gravable e impuestos, en pesos colombianos (COP)',periodTxt());
   var comp=Number(r.compras),nt=Number(r.notas),val=Number(r.valor),iva=Number(r.iva),inc=Number(r.inc),nog=Number(r.no_gravado),bas=Number(r.base);var sub=bas+nog,imp=iva+inc;if(!(comp>0)||!(val>0)){return;}
   var CG=cv('--ok'),CO=cv('--amber'),CR=cv('--red'),CK=cv('--head'),CN=cv('--muted'),T1=cv('--head'),T2=cv('--muted');
-  var W=Math.max(300,host.clientWidth),nr=W<560,nw=nr?16:28,mt=nr?60:70,mr=nr?108:200,gp=nr?66:78,Hn=nr?210:280,k2=Hn/comp;function h(v){return Math.max(3,v*k2);}
+  var W=Math.max(760,host.clientWidth),nr=false,nw=nr?16:28,mt=nr?60:70,mr=nr?108:200,gp=nr?66:78,Hn=nr?210:280,k2=Hn/comp;function h(v){return Math.max(3,v*k2);}
   var span=W-mr-nw-6,xs=[4,4+span*0.34,4+span*0.67,4+span];
   var yC0=mt+90,yN=mt+30,yNt=yN+h(val)+gp,yS=mt+75,yI=yS+h(sub)+gp,yB=mt,yG=yB+h(bas)+(nr?26:22),yV=Math.max(yI,yG+h(nog)/2+(nr?44:50)-h(iva)/2),yC=yV+h(iva)/2+(nr?44:50)-h(inc)/2;
   var H=Math.max(yNt+h(nt),yI+h(imp),yG+h(nog),yC+h(inc),yC0+Hn)+22;
-  var svg=zvNS(null,'svg',{width:W,height:H,role:'img','aria-label':'Flujo del gasto: compras brutas '+pm(comp)+', notas crédito '+pm(-nt)+', gasto neto '+pm(val)+', impuestos '+pm(imp)+', base gravable '+pm(bas)+' y valor sin impuesto '+pm(nog)});host.appendChild(svg);
+  var svg=zvNS(null,'svg',{width:W,height:H,role:'img','aria-label':'Flujo del gasto: compras brutas '+pm(comp)+', notas crédito '+pm(-nt)+', gasto neto '+pm(val)+', impuestos '+pm(imp)+', base gravable '+pm(bas)+' y valor sin impuesto '+pm(nog)});var sc=document.createElement('div');sc.className='zvsc';sc.appendChild(svg);host.appendChild(sc);
   function band(a,sy,b,ty,t,col,op){var x0=xs[a]+nw,x1=xs[b],xm=(x0+x1)/2;zvNS(svg,'path',{d:'M'+x0+' '+sy+'C'+xm+' '+sy+','+xm+' '+ty+','+x1+' '+ty+'L'+x1+' '+(ty+t)+'C'+xm+' '+(ty+t)+','+xm+' '+(sy+t)+','+x0+' '+(sy+t)+'Z',fill:col,opacity:op||0.4});}
   band(0,yC0,1,yN,h(val),CG,0.4);band(0,yC0+h(val),1,yNt,h(nt),CR,0.5);band(1,yN,2,yS,h(sub),CG,0.4);band(1,yN+h(sub),2,yI,h(imp),CO,0.45);band(2,yS,3,yB,h(bas),CG,0.4);band(2,yS+h(bas),3,yG,h(nog),CN,0.35);band(2,yI,3,yV,h(iva),CO,0.45);band(2,yI+h(iva),3,yC,h(inc),CO,0.55);
   var ND=[{k:'cuadre',l:'Compras brutas',s:'Compras',v:comp,c:0,y:yC0,t:CK,p:null},{k:'cuadre',l:'Gasto neto',s:'Gasto neto',v:val,c:1,y:yN,t:CG,p:val/comp*100,pl:'de las compras'},{k:'notas',l:'Notas crédito',s:'Notas',v:nt,c:1,y:yNt,t:CR,p:nt/comp*100,pl:'de las compras'},{k:'subtotal',l:'Subtotal antes de impuestos',s:'Antes de imp.',v:sub,c:2,y:yS,t:CG,p:sub/val*100,pl:'del gasto neto'},{k:'impuestos',l:'Impuestos (IVA + INC)',s:'Impuestos',v:imp,c:2,y:yI,t:CO,p:imp/val*100,pl:'del gasto neto'},{k:'base',l:'Base gravable',s:'Base gravable',v:bas,c:3,y:yB,t:CG,p:bas/val*100,pl:'del gasto neto'},{k:'sinimp',l:'Valor sin impuesto',s:'Sin impuesto',v:nog,c:3,y:yG,t:CN,p:nog/val*100,pl:'del gasto neto'},{k:'iva',l:'IVA',s:'IVA',v:iva,c:3,y:yV,t:CO,p:iva/val*100,pl:'del gasto neto'},{k:'inc',l:'INC (impoconsumo)',s:'INC',v:inc,c:3,y:yC,t:CO,p:inc/val*100,pl:'del gasto neto'}];
